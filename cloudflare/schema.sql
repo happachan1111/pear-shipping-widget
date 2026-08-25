@@ -1,0 +1,14 @@
+CREATE TABLE IF NOT EXISTS items (
+  id TEXT PRIMARY KEY,
+  source TEXT NOT NULL,
+  variety TEXT NOT NULL,
+  date TEXT NOT NULL,
+  comments TEXT NOT NULL DEFAULT '[]',
+  updated_at INTEGER NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS activity (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  text TEXT NOT NULL,
+  created_at INTEGER NOT NULL
+);
