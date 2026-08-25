@@ -8,9 +8,13 @@ export default {
     if (request.method === 'OPTIONS') return new Response(null, { headers: cors });
     const url = new URL(request.url);
     try {
-      await init(env);
-      await seedDeadline(env);
-      await seedTimeline(env);
+      // 初回セットアップ用。通常の表示では毎回実行しないので軽くなります。
+      if (url.pathname === '/setup') {
+        await init(env);
+        await seedDeadline(env);
+        await seedTimeline(env);
+        return json({ ok: true, message: 'setup complete' }, cors);
+      }
 
       if (url.pathname === '/data' && request.method === 'GET') {
         const items = (await env.DB.prepare('SELECT * FROM items ORDER BY date, source, variety').all()).results.map(row => ({...row, comments: JSON.parse(row.comments || '[]')}));
@@ -98,7 +102,7 @@ export default {
     }
   }
 }
-function json(data, cors, status = 200) { return new Response(JSON.stringify(data), { status, headers: { ...cors, 'Content-Type': 'application/json; charset=utf-8' } }); }
+function json(data, cors, status = 200) { return new Response(JSON.stringify(data), { status, headers: { ...cors, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' } }); }
 async function init(env) {
   await env.DB.prepare(`CREATE TABLE IF NOT EXISTS items (id TEXT PRIMARY KEY, source TEXT NOT NULL, variety TEXT NOT NULL, date TEXT NOT NULL, comments TEXT NOT NULL DEFAULT '[]', updated_at INTEGER NOT NULL)`).run();
   await env.DB.prepare(`CREATE TABLE IF NOT EXISTS activity (id INTEGER PRIMARY KEY AUTOINCREMENT, text TEXT NOT NULL, created_at INTEGER NOT NULL)`).run();
