@@ -12,3 +12,21 @@ CREATE TABLE IF NOT EXISTS activity (
   text TEXT NOT NULL,
   created_at INTEGER NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS timeline (
+  id TEXT PRIMARY KEY,
+  source TEXT NOT NULL,
+  variety TEXT NOT NULL,
+  year INTEGER NOT NULL,
+  start TEXT NOT NULL,
+  end TEXT NOT NULL,
+  hidden INTEGER NOT NULL DEFAULT 0,
+  comments TEXT NOT NULL DEFAULT '[]',
+  updated_at INTEGER NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS timeline_activity (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  text TEXT NOT NULL,
+  created_at INTEGER NOT NULL
+);
