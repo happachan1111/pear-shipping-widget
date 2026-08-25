@@ -1,1 +1,559 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>梨｜今月の発注・出荷・集計</title>
+  <style>
+    :root{
+      --bg:#0b1220;
+      --panel:#121a2b;
+      --panel2:#0f1730;
+      --text:#e9eefc;
+      --muted:#a9b4d0;
+      --line:rgba(255,255,255,.10);
+      --good:#20c997;
+      --warn:#ffd43b;
+      --bad:#ff6b6b;
+      --accent:#7aa2ff;
+      --chip:#1b2642;
+      --shadow: 0 10px 30px rgba(0,0,0,.25);
+      --radius:16px;
+    }
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", Arial;
+      background: radial-gradient(1000px 600px at 20% 0%, rgba(122,162,255,.25), transparent 60%),
+                  radial-gradient(900px 600px at 80% 10%, rgba(32,201,151,.18), transparent 55%),
+                  var(--bg);
+      color:var(--text);
+    }
+    a{ color: var(--accent); }
+    .wrap{ max-width: 1100px; margin: 0 auto; padding: 18px 14px 60px; }
+    header{
+      display:flex; gap:12px; align-items:flex-end; justify-content:space-between;
+      margin: 8px 0 14px;
+    }
+    .title h1{
+      font-size: 20px; margin:0; letter-spacing:.02em;
+    }
+    .title .sub{
+      margin-top:6px; color:var(--muted); font-size: 13px;
+    }
+    .pill{
+      display:inline-flex; gap:8px; align-items:center;
+      padding:8px 10px; border:1px solid var(--line);
+      background: rgba(18,26,43,.65);
+      border-radius: 999px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    @media (min-width: 900px){
+      .grid{ grid-template-columns: 1.25fr .75fr; align-items:start; }
+    }
+    .card{
+      background: linear-gradient(180deg, rgba(18,26,43,.92), rgba(15,23,48,.85));
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .card .hd{
+      padding: 14px 14px 10px;
+      border-bottom: 1px solid var(--line);
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+    }
+    .card .hd h2{
+      margin:0; font-size: 14px; letter-spacing:.02em;
+    }
+    .card .bd{ padding: 12px 14px 14px; }
+    .kpiRow{
+      display:grid; grid-template-columns: 1fr 1fr; gap:10px;
+    }
+    .kpi{
+      background: rgba(11,18,32,.35);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 10px 12px;
+    }
+    .kpi .label{ color: var(--muted); font-size: 12px; }
+    .kpi .value{ font-size: 22px; margin-top:4px; font-weight: 700; }
+    .kpi .value small{ font-size: 12px; color: var(--muted); font-weight: 500; margin-left:6px; }
+    .tag{
+      display:inline-flex; align-items:center;
+      background: var(--chip);
+      border: 1px solid var(--line);
+      color: var(--muted);
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: 12px;
+      white-space:nowrap;
+    }
+    .sectionNote{ color: var(--muted); font-size:12px; line-height:1.55; }
+    details{
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(11,18,32,.25);
+      overflow:hidden;
+      margin: 10px 0;
+    }
+    summary{
+      list-style:none;
+      cursor:pointer;
+      padding: 10px 12px;
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+    }
+    summary::-webkit-details-marker{ display:none; }
+    .supplierName{ font-weight: 700; }
+    .rowRight{
+      display:flex; gap:8px; align-items:center; flex-wrap:wrap; justify-content:flex-end;
+    }
+    .metric{
+      display:inline-flex; gap:6px; align-items:baseline;
+      padding: 5px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(18,26,43,.55);
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .metric b{ color: var(--text); font-size: 14px; }
+    .inner{
+      padding: 0 12px 12px;
+    }
+    .twoCol{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:10px;
+    }
+    @media (min-width: 900px){
+      .twoCol{ grid-template-columns: 1fr 1fr; }
+    }
+    .box{
+      border:1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(18,26,43,.35);
+      padding: 10px 12px;
+    }
+    .box h3{ margin:0 0 8px; font-size: 13px; color: var(--text); }
+    .mini{ color: var(--muted); font-size: 12px; line-height: 1.6; }
+    .breakdown{
+      display:flex; flex-wrap:wrap; gap:6px;
+    }
+    .chip{
+      display:inline-flex; gap:6px; align-items:center;
+      padding: 5px 8px;
+      border:1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(11,18,32,.28);
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .chip b{ color: var(--text); }
+    .calendar{
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 8px;
+    }
+    .calendar th{
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 600;
+      text-align:center;
+      padding: 4px 0;
+    }
+    .dayCell{
+      vertical-align: top;
+      border: 1px solid var(--line);
+      background: rgba(11,18,32,.25);
+      border-radius: 14px;
+      padding: 8px 8px 10px;
+      min-height: 88px;
+      position: relative;
+    }
+    .dayNum{
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .event{
+      margin-top: 8px;
+      padding: 7px 8px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: rgba(122,162,255,.10);
+      cursor:pointer;
+    }
+    .event .label{
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing:.02em;
+    }
+    .event.urgent{ background: rgba(255,107,107,.12); border-color: rgba(255,107,107,.35); }
+    .event.info{ background: rgba(122,162,255,.10); }
+    .event.warn{ background: rgba(255,212,59,.10); border-color: rgba(255,212,59,.28); }
+    .eventCount{
+      position:absolute; top:8px; right:8px;
+      font-size: 11px; color: var(--muted);
+      border:1px solid var(--line);
+      background: rgba(18,26,43,.55);
+      border-radius: 999px;
+      padding: 2px 7px;
+    }
+    .modalBack{
+      position:fixed; inset:0; background: rgba(0,0,0,.55);
+      display:none; align-items:center; justify-content:center;
+      padding: 14px;
+    }
+    .modal{
+      width:min(680px, 100%);
+      background: linear-gradient(180deg, rgba(18,26,43,.98), rgba(15,23,48,.96));
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .modal .mh{
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+      display:flex; align-items:center; justify-content:space-between; gap:8px;
+    }
+    .modal .mh b{ font-size: 14px; }
+    .modal .mb{ padding: 12px 14px 14px; }
+    .btn{
+      appearance:none; border:1px solid var(--line);
+      background: rgba(11,18,32,.35);
+      color: var(--text);
+      padding: 6px 10px;
+      border-radius: 12px;
+      cursor:pointer;
+      font-size: 12px;
+    }
+    .muted{ color: var(--muted); font-size: 12px; }
+    .error{
+      border:1px solid rgba(255,107,107,.35);
+      background: rgba(255,107,107,.10);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 14px;
+      line-height: 1.6;
+    }
+    footer{
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 12px;
+      text-align: center;
+      opacity: .9;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="title">
+        <h1>梨｜今月の発注・出荷・集計（共有）</h1>
+        <div class="sub" id="monthLabel">—</div>
+      </div>
+      <div class="pill">
+        <span>データ:</span>
+        <span class="tag">data.json</span>
+        <span class="tag">comments.json</span>
+      </div>
+    </header>
 
+    <div class="grid">
+      <section class="card">
+        <div class="hd">
+          <h2>出荷元別（クリックで内訳表示）</h2>
+          <span class="tag" id="rangeTag">今月</span>
+        </div>
+        <div class="bd">
+          <div class="kpiRow">
+            <div class="kpi">
+              <div class="label">今月 発注合計</div>
+              <div class="value"><span id="orderedTotal">—</span><small>件</small></div>
+            </div>
+            <div class="kpi">
+              <div class="label">今月 出荷合計</div>
+              <div class="value"><span id="shippedTotal">—</span><small>件</small></div>
+            </div>
+          </div>
+          <div style="height:10px"></div>
+          <div class="sectionNote">
+            ・閉じた状態は「件数だけ」。<br>
+            ・開くと「品種内訳」と「注意」が見えます。
+          </div>
+          <div id="suppliers"></div>
+        </div>
+      </section>
+
+      <aside class="card">
+        <div class="hd">
+          <h2>今月の集計カレンダー（クリックでコメント）</h2>
+          <span class="tag" id="eventCountTag">—</span>
+        </div>
+        <div class="bd">
+          <div class="sectionNote">
+            「集計日」が分かりやすく出ます。コメントは <span class="tag">comments.json</span> を編集してください。
+          </div>
+          <div style="height:10px"></div>
+          <div id="calendar"></div>
+          <div style="height:10px"></div>
+          <div class="muted">※反映が遅い場合は再読み込みしてください。</div>
+        </div>
+      </aside>
+    </div>
+
+    <footer>
+      monthly-summary / GitHub Pages
+    </footer>
+  </div>
+
+  <div class="modalBack" id="modalBack" role="dialog" aria-modal="true">
+    <div class="modal">
+      <div class="mh">
+        <b id="modalTitle">—</b>
+        <button class="btn" id="modalClose">閉じる</button>
+      </div>
+      <div class="mb">
+        <div class="muted" id="modalMeta">—</div>
+        <div style="height:10px"></div>
+        <div id="modalBody" style="line-height:1.7"></div>
+      </div>
+    </div>
+  </div>
+
+<script>
+  function pad2(n){ return String(n).padStart(2,'0'); }
+  function ymd(d){ return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`; }
+  function escapeHtml(s){
+    return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");
+  }
+
+  function openModal({title, meta, bodyHtml}){
+    document.getElementById("modalTitle").textContent = title;
+    document.getElementById("modalMeta").textContent = meta || "";
+    document.getElementById("modalBody").innerHTML = bodyHtml || "";
+    document.getElementById("modalBack").style.display = "flex";
+  }
+  function closeModal(){
+    document.getElementById("modalBack").style.display = "none";
+  }
+  document.getElementById("modalClose").addEventListener("click", closeModal);
+  document.getElementById("modalBack").addEventListener("click", (e)=>{
+    if(e.target.id === "modalBack") closeModal();
+  });
+
+  async function loadJson(path){
+    const url = `${path}?_=${Date.now()}`;
+    const r = await fetch(url, { cache: "no-store" });
+    if(!r.ok) throw new Error(`${path} の読み込みに失敗しました (${r.status})`);
+    return await r.json();
+  }
+
+  function currentMonthInfo(){
+    const now = new Date();
+    const y = now.getFullYear();
+    const m = now.getMonth();
+    const first = new Date(y, m, 1);
+    const last = new Date(y, m+1, 0);
+    return { y, m, first, last };
+  }
+
+  function monthLabelJP(y, m0){
+    return `${y}年${m0+1}月（今月）`;
+  }
+
+  function renderSuppliers(data){
+    const suppliers = Array.isArray(data.suppliers) ? data.suppliers : [];
+    const varieties = Array.isArray(data.varieties) ? data.varieties : [];
+
+    let orderedTotal = 0;
+    let shippedTotal = 0;
+    for(const s of suppliers){
+      orderedTotal += Number(s.orderedTotal || 0);
+      shippedTotal += Number(s.shippedTotal || 0);
+    }
+    document.getElementById("orderedTotal").textContent = orderedTotal;
+    document.getElementById("shippedTotal").textContent = shippedTotal;
+
+    const root = document.getElementById("suppliers");
+    root.innerHTML = "";
+
+    if(suppliers.length === 0){
+      root.innerHTML = `<div class="error">data.json の suppliers が空です。出荷元を追加してください。</div>`;
+      return;
+    }
+
+    for(const s of suppliers){
+      const notes = Array.isArray(s.notes) ? s.notes : [];
+      const orderedBreakdown = s.orderedBreakdown || {};
+      const shippedBreakdown = s.shippedBreakdown || {};
+
+      const orderedChips = varieties.map(v => {
+        const n = Number(orderedBreakdown[v] || 0);
+        return `<span class="chip">${escapeHtml(v)} <b>${n}</b></span>`;
+      }).join("");
+
+      const shippedChips = varieties.map(v => {
+        const n = Number(shippedBreakdown[v] || 0);
+        return `<span class="chip">${escapeHtml(v)} <b>${n}</b></span>`;
+      }).join("");
+
+      const notesHtml = notes.length
+        ? `<ul class="mini" style="margin:0; padding-left: 18px;">
+            ${notes.map(t=>`<li>${escapeHtml(t)}</li>`).join("")}
+           </ul>`
+        : `<div class="mini">（注意なし）</div>`;
+
+      const el = document.createElement("details");
+      el.innerHTML = `
+        <summary>
+          <div class="supplierName">${escapeHtml(s.name || "（名称未設定）")}</div>
+          <div class="rowRight">
+            <span class="metric">発注 <b>${Number(s.orderedTotal||0)}</b> 件</span>
+            <span class="metric">出荷 <b>${Number(s.shippedTotal||0)}</b> 件</span>
+            <span class="tag">内訳</span>
+          </div>
+        </summary>
+        <div class="inner">
+          <div class="twoCol">
+            <div class="box">
+              <h3>発注｜品種内訳</h3>
+              <div class="breakdown">${orderedChips || `<span class="mini">（内訳なし）</span>`}</div>
+            </div>
+            <div class="box">
+              <h3>出荷｜品種内訳</h3>
+              <div class="breakdown">${shippedChips || `<span class="mini">（内訳なし）</span>`}</div>
+            </div>
+          </div>
+          <div style="height:10px"></div>
+          <div class="box">
+            <h3>注意（共有）</h3>
+            ${notesHtml}
+          </div>
+        </div>
+      `;
+      root.appendChild(el);
+    }
+  }
+
+  function renderCalendar(events){
+    const { y, m, first, last } = currentMonthInfo();
+    const startDow = first.getDay();
+    const daysInMonth = last.getDate();
+
+    const byDate = new Map();
+    for(const ev of events){
+      if(!ev || !ev.date) continue;
+      const key = ev.date;
+      if(!byDate.has(key)) byDate.set(key, []);
+      byDate.get(key).push(ev);
+    }
+
+    const weeks = [];
+    let week = new Array(7).fill(null);
+
+    let day = 1;
+    for(let i=0;i<startDow;i++) week[i] = null;
+
+    for(let i=startDow;i<7;i++){
+      week[i] = new Date(y, m, day++);
+    }
+    weeks.push(week);
+
+    while(day <= daysInMonth){
+      week = new Array(7).fill(null);
+      for(let i=0;i<7 && day<=daysInMonth;i++){
+        week[i] = new Date(y, m, day++);
+      }
+      weeks.push(week);
+    }
+
+    const weekdays = ["日","月","火","水","木","金","土"];
+    let html = `<table class="calendar"><thead><tr>${weekdays.map(w=>`<th>${w}</th>`).join("")}</tr></thead><tbody>`;
+
+    for(const w of weeks){
+      html += "<tr>";
+      for(const d of w){
+        if(!d){
+          html += `<td><div class="dayCell" style="opacity:.35"><div class="dayNum">—</div></div></td>`;
+          continue;
+        }
+        const key = ymd(d);
+        const list = byDate.get(key) || [];
+        const count = list.length;
+
+        const itemsHtml = list.map(ev=>{
+          const level = (ev.level || "info");
+          const label = ev.label || "予定";
+          return `
+            <div class="event ${escapeHtml(level)}" data-date="${escapeHtml(key)}" data-label="${escapeHtml(label)}" data-message="${escapeHtml(ev.message || "")}">
+              <div class="label">${escapeHtml(label)}</div>
+              <div class="muted" style="margin-top:4px">${escapeHtml((ev.message||"").slice(0, 30))}${(ev.message||"").length>30?"…":""}</div>
+            </div>
+          `;
+        }).join("");
+
+        html += `
+          <td>
+            <div class="dayCell">
+              <div class="dayNum">${d.getDate()}</div>
+              ${count ? `<div class="eventCount">${count}件</div>` : ``}
+              ${itemsHtml || ``}
+            </div>
+          </td>
+        `;
+      }
+      html += "</tr>";
+    }
+
+    html += "</tbody></table>";
+    const root = document.getElementById("calendar");
+    root.innerHTML = html;
+
+    root.querySelectorAll(".event").forEach(el=>{
+      el.addEventListener("click", ()=>{
+        const date = el.getAttribute("data-date");
+        const label = el.getAttribute("data-label");
+        const msg = el.getAttribute("data-message") || "";
+        openModal({
+          title: `${label}`,
+          meta: `${date}`,
+          bodyHtml: msg ? `<div>${escapeHtml(msg).replaceAll("\n","<br>")}</div>` : `<div class="muted">（コメントなし）</div>`
+        });
+      });
+    });
+  }
+
+  async function main(){
+    const { y, m } = currentMonthInfo();
+    document.getElementById("monthLabel").textContent = monthLabelJP(y, m);
+
+    try{
+      const data = await loadJson("./data.json");
+      renderSuppliers(data);
+    }catch(e){
+      document.getElementById("suppliers").innerHTML = `<div class="error">${escapeHtml(e.message || e)}</div>`;
+    }
+
+    try{
+      const comments = await loadJson("./comments.json");
+      const events = Array.isArray(comments.calendarEvents) ? comments.calendarEvents : [];
+      document.getElementById("eventCountTag").textContent = `集計など ${events.length}件`;
+      renderCalendar(events);
+    }catch(e){
+      document.getElementById("eventCountTag").textContent = `読み込み失敗`;
+      document.getElementById("calendar").innerHTML = `<div class="error">${escapeHtml(e.message || e)}</div>`;
+    }
+  }
+
+  main();
+</script>
+</body>
+</html>
