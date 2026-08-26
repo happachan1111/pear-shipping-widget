@@ -104,10 +104,11 @@ export default {
       if (url.pathname === '/orders/rows' && request.method === 'POST') {
         await initOrders(env);
         const body = await request.json();
-        const id = body.id || [body.date, body.partner, Date.now()].join('|');
-        await env.DB.prepare('INSERT INTO orders (id, date, partner, order_count, ship_count, sheet_url, memo, comments, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)')
-          .bind(id, body.date, body.partner, Number(body.order_count || 0), Number(body.ship_count || 0), body.sheet_url || '', body.memo || '', JSON.stringify(body.comments || []), Date.now()).run();
-        await addOrdersActivity(env, `${body.date} ${body.partner} 発注${body.order_count || 0}件／出荷${body.ship_count || 0}件を追加しました。`);
+        const id = body.id || [body.date, body.partner, body.record_type || 'order', Date.now()].join('|');
+        const recordType = body.record_type || 'order';
+        await env.DB.prepare('INSERT INTO orders (id, date, partner, record_type, order_count, ship_count, sheet_url, memo, comments, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
+          .bind(id, body.date, body.partner, recordType, Number(body.order_count || 0), Number(body.ship_count || 0), body.sheet_url || '', body.memo || '', JSON.stringify(body.comments || []), Date.now()).run();
+        await addOrdersActivity(env, `${body.date} ${body.partner} ${typeLabel(recordType)}を追加しました。`);
         return json({ ok: true, id }, cors);
       }
       const ordersMatch = url.pathname.match(/^\/orders\/rows\/([^/]+)$/);
@@ -115,9 +116,10 @@ export default {
         await initOrders(env);
         const id = decodeURIComponent(ordersMatch[1]);
         const body = await request.json();
-        await env.DB.prepare('UPDATE orders SET date=?, partner=?, order_count=?, ship_count=?, sheet_url=?, memo=?, comments=?, updated_at=? WHERE id=?')
-          .bind(body.date, body.partner, Number(body.order_count || 0), Number(body.ship_count || 0), body.sheet_url || '', body.memo || '', JSON.stringify(body.comments || []), Date.now(), id).run();
-        await addOrdersActivity(env, `${body.date} ${body.partner} 発注${body.order_count || 0}件／出荷${body.ship_count || 0}件を更新しました。`);
+        const recordType = body.record_type || 'order';
+        await env.DB.prepare('UPDATE orders SET date=?, partner=?, record_type=?, order_count=?, ship_count=?, sheet_url=?, memo=?, comments=?, updated_at=? WHERE id=?')
+          .bind(body.date, body.partner, recordType, Number(body.order_count || 0), Number(body.ship_count || 0), body.sheet_url || '', body.memo || '', JSON.stringify(body.comments || []), Date.now(), id).run();
+        await addOrdersActivity(env, `${body.date} ${body.partner} ${typeLabel(recordType)}を更新しました。`);
         return json({ ok: true }, cors);
       }
       if (ordersMatch && request.method === 'DELETE') {
@@ -145,6 +147,7 @@ export default {
     }
   }
 }
+function typeLabel(t) { return t === 'ship' ? '出荷' : t === 'summary' ? '集計' : '発注'; }
 function json(data, cors, status = 200) { return new Response(JSON.stringify(data), { status, headers: { ...cors, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' } }); }
 async function init(env) {
   await env.DB.prepare(`CREATE TABLE IF NOT EXISTS items (id TEXT PRIMARY KEY, source TEXT NOT NULL, variety TEXT NOT NULL, date TEXT NOT NULL, comments TEXT NOT NULL DEFAULT '[]', updated_at INTEGER NOT NULL)`).run();
@@ -154,8 +157,14 @@ async function init(env) {
   await initOrders(env);
 }
 async function initOrders(env) {
-  await env.DB.prepare(`CREATE TABLE IF NOT EXISTS orders (id TEXT PRIMARY KEY, date TEXT NOT NULL, partner TEXT NOT NULL, order_count INTEGER NOT NULL DEFAULT 0, ship_count INTEGER NOT NULL DEFAULT 0, sheet_url TEXT NOT NULL DEFAULT '', memo TEXT NOT NULL DEFAULT '', comments TEXT NOT NULL DEFAULT '[]', updated_at INTEGER NOT NULL)`).run();
+  await env.DB.prepare(`CREATE TABLE IF NOT EXISTS orders (id TEXT PRIMARY KEY, date TEXT NOT NULL, partner TEXT NOT NULL, record_type TEXT NOT NULL DEFAULT 'order', order_count INTEGER NOT NULL DEFAULT 0, ship_count INTEGER NOT NULL DEFAULT 0, sheet_url TEXT NOT NULL DEFAULT '', memo TEXT NOT NULL DEFAULT '', comments TEXT NOT NULL DEFAULT '[]', updated_at INTEGER NOT NULL)`).run();
+  await ensureColumn(env, 'orders', 'record_type', `TEXT NOT NULL DEFAULT 'order'`);
   await env.DB.prepare(`CREATE TABLE IF NOT EXISTS orders_activity (id INTEGER PRIMARY KEY AUTOINCREMENT, text TEXT NOT NULL, created_at INTEGER NOT NULL)`).run();
+}
+async function ensureColumn(env, table, column, definition) {
+  const info = await env.DB.prepare(`PRAGMA table_info(${table})`).all();
+  const exists = (info.results || []).some(c => c.name === column);
+  if (!exists) await env.DB.prepare(`ALTER TABLE ${table} ADD COLUMN ${column} ${definition}`).run();
 }
 async function addActivity(env, text) { await env.DB.prepare('INSERT INTO activity (text, created_at) VALUES (?, ?)').bind(text, Date.now()).run(); }
 async function addTimelineActivity(env, text) { await env.DB.prepare('INSERT INTO timeline_activity (text, created_at) VALUES (?, ?)').bind(text, Date.now()).run(); }
