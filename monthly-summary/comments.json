@@ -1,0 +1,11 @@
+{
+  "monthMode": "current_month",
+  "calendarEvents": [
+    {
+      "date": "2026-08-30",
+      "label": "集計日",
+      "message": "この日集計あるから追加してね！",
+      "level": "urgent"
+    }
+  ]
+}
