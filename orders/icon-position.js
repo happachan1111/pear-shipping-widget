@@ -1,0 +1,1 @@
+(()=>{const st=document.createElement('style');st.id='summaryDayPosition';st.textContent='.num{padding-left:0!important;padding-right:27px!important;text-align:left!important}.summaryDayBtn{left:auto!important;right:0!important;top:-3px!important}';document.head.appendChild(st)})();
