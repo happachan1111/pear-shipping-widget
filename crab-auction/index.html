@@ -9,7 +9,7 @@
 <body>
 <div class="app">
 <header class="header">
-<div><div class="title">🦀 カニ せり情報カレンダー</div><div class="subtitle">取引先が提示した価格を日付ごとに記録します。</div></div>
+<div><div class="title">🦀 カニ せり情報カレンダー</div><div class="subtitle">取引先が提示した価格と確認内容を日付ごとに記録します。</div></div>
 <button id="refreshBtn" class="button" type="button">↻ 更新</button>
 </header>
 <section class="yearBar">
@@ -30,17 +30,18 @@
 <input id="rowId" type="hidden">
 <label for="date">日付</label><input id="date" type="date">
 <label for="partner">取引先</label><select id="partner"></select>
-<label for="price">提示価格</label><input id="price" placeholder="例：5,000円／kg、8,000〜10,000円">
-<label for="note">メモ</label><textarea id="note" rows="3" placeholder="相場の状況、サイズ、数量、注意事項など"></textarea>
+<label for="price">提示価格（未定・不明は空欄可）</label><input id="price" placeholder="例：5,000円／kg、8,000〜10,000円">
+<label for="note">説明・メモ</label><textarea id="note" rows="4" placeholder="せり予定、相場の状況、数量、天候、注意事項など"></textarea>
 <div class="actions"><button id="clearBtn" class="button" type="button">選択解除</button><button id="deleteBtn" class="button danger hidden" type="button">削除</button><button id="saveBtn" class="button primary" type="button">保存</button></div>
 <div id="status" class="status"></div>
 </div>
-<div class="card upcomingCard"><div class="cardTitle">直近のせり価格</div><div id="upcoming"></div></div>
+<div class="card upcomingCard"><div class="cardTitle">直近のせり価格・確認内容</div><div id="upcoming"></div></div>
 </section>
 </div>
 <dialog id="commentDialog">
 <div class="dialogInner"><h3 id="commentTitle">コメント</h3><div id="commentList" class="commentList"></div><textarea id="commentText" rows="4" placeholder="確認事項や補足を入力"></textarea><div class="dialogActions"><button id="closeComment" class="button" type="button">閉じる</button><button id="addComment" class="button primary" type="button">コメント追加</button></div></div>
 </dialog>
-<script src="./app.js?v=2"></script>
+<script src="./app.js?v=3"></script>
+<script src="./calendar-confirm-import.js?v=1"></script>
 </body>
 </html>
