@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>カニ せり情報カレンダー</title>
-<link rel="stylesheet" href="./style.css?v=1">
+<link rel="stylesheet" href="./style.css?v=2">
 </head>
 <body>
 <div class="app">
@@ -12,12 +12,17 @@
 <div><div class="title">🦀 カニ せり情報カレンダー</div><div class="subtitle">取引先が提示した価格を日付ごとに記録します。</div></div>
 <button id="refreshBtn" class="button" type="button">↻ 更新</button>
 </header>
+<section class="yearBar">
+<div id="quickYears" class="quickYears"></div>
+<label class="yearSelectLabel">年を選択<select id="yearSelect"></select></label>
+</section>
 <section class="monthBar">
 <button id="prevMonth" class="button" type="button">‹ 前月</button>
 <div id="monthLabel" class="monthLabel"></div>
 <button id="thisMonth" class="button current" type="button">今月</button>
 <button id="nextMonth" class="button" type="button">次月 ›</button>
 </section>
+<div class="comparisonHelp">各日付の下部に、前年の同じ日の価格がある場合は参考表示します。</div>
 <div id="calendar" class="calendar"></div>
 <section class="panel">
 <div class="card editor">
@@ -26,6 +31,7 @@
 <label for="date">日付</label><input id="date" type="date">
 <label for="partner">取引先</label><select id="partner"></select>
 <label for="price">提示価格</label><input id="price" placeholder="例：5,000円／kg、8,000〜10,000円">
+<label for="note">メモ</label><textarea id="note" rows="3" placeholder="相場の状況、サイズ、数量、注意事項など"></textarea>
 <div class="actions"><button id="clearBtn" class="button" type="button">選択解除</button><button id="deleteBtn" class="button danger hidden" type="button">削除</button><button id="saveBtn" class="button primary" type="button">保存</button></div>
 <div id="status" class="status"></div>
 </div>
@@ -35,6 +41,6 @@
 <dialog id="commentDialog">
 <div class="dialogInner"><h3 id="commentTitle">コメント</h3><div id="commentList" class="commentList"></div><textarea id="commentText" rows="4" placeholder="確認事項や補足を入力"></textarea><div class="dialogActions"><button id="closeComment" class="button" type="button">閉じる</button><button id="addComment" class="button primary" type="button">コメント追加</button></div></div>
 </dialog>
-<script src="./app.js?v=1"></script>
+<script src="./app.js?v=2"></script>
 </body>
 </html>
