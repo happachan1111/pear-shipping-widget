@@ -6,6 +6,7 @@
 <title>カニ せり情報カレンダー</title>
 <link rel="stylesheet" href="./style.css?v=2">
 <link rel="stylesheet" href="./compact-notes.css?v=2">
+<link rel="stylesheet" href="./notice-updates.css?v=1">
 </head>
 <body>
 <div class="app">
@@ -13,14 +14,18 @@
 <div><div class="title">🦀 カニ せり情報カレンダー</div><div class="subtitle">取引先が提示した価格と確認内容を日付ごとに記録します。</div></div>
 <button id="refreshBtn" class="button" type="button">↻ 更新</button>
 </header>
+<section id="auctionNotice" class="auctionNotice">
+<button id="noticeToggle" class="noticeHead" type="button"><span>📢 お知らせ</span><span id="noticeCount" class="noticeCount"></span><span id="noticeArrow" class="noticeArrow">▼</span></button>
+<div id="noticeList" class="noticeList"></div>
+</section>
 <section class="yearBar">
 <div id="quickYears" class="quickYears"></div>
 <label class="yearSelectLabel">年を選択<select id="yearSelect"></select></label>
 </section>
+<div class="todayJump"><button id="thisMonth" class="button current" type="button">今月に戻る</button></div>
 <section class="monthBar">
 <button id="prevMonth" class="button" type="button">‹ 前月</button>
 <div id="monthLabel" class="monthLabel"></div>
-<button id="thisMonth" class="button current" type="button">今月</button>
 <button id="nextMonth" class="button" type="button">次月 ›</button>
 </section>
 <div class="comparisonHelp">各日付の下部に、前年の同じ日の価格がある場合は参考表示します。</div>
@@ -44,6 +49,7 @@
 </dialog>
 <script src="./app.js?v=3"></script>
 <script src="./compact-notes.js?v=3"></script>
+<script src="./notice-updates.js?v=1"></script>
 <script src="./calendar-confirm-import.js?v=1"></script>
 </body>
 </html>
