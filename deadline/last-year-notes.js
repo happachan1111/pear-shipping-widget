@@ -26,7 +26,7 @@
       note.className = 'item lastyear';
 
       const title = document.createElement('b');
-      title.textContent = '去年はこの日';
+      title.textContent = '去年の受注締日';
       note.appendChild(title);
 
       const details = document.createElement('span');
