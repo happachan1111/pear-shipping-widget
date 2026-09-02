@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>カニ せり情報カレンダー</title>
+<link rel="stylesheet" href="./style.css?v=1">
+</head>
+<body>
+<div class="app">
+<header class="header">
+<div><div class="title">🦀 カニ せり情報カレンダー</div><div class="subtitle">取引先が提示した価格を日付ごとに記録します。</div></div>
+<button id="refreshBtn" class="button" type="button">↻ 更新</button>
+</header>
+<section class="monthBar">
+<button id="prevMonth" class="button" type="button">‹ 前月</button>
+<div id="monthLabel" class="monthLabel"></div>
+<button id="thisMonth" class="button current" type="button">今月</button>
+<button id="nextMonth" class="button" type="button">次月 ›</button>
+</section>
+<div id="calendar" class="calendar"></div>
+<section class="panel">
+<div class="card editor">
+<div id="formTitle" class="cardTitle">せり価格を追加</div>
+<input id="rowId" type="hidden">
+<label for="date">日付</label><input id="date" type="date">
+<label for="partner">取引先</label><select id="partner"></select>
+<label for="price">提示価格</label><input id="price" placeholder="例：5,000円／kg、8,000〜10,000円">
+<div class="actions"><button id="clearBtn" class="button" type="button">選択解除</button><button id="deleteBtn" class="button danger hidden" type="button">削除</button><button id="saveBtn" class="button primary" type="button">保存</button></div>
+<div id="status" class="status"></div>
+</div>
+<div class="card upcomingCard"><div class="cardTitle">直近のせり価格</div><div id="upcoming"></div></div>
+</section>
+</div>
+<dialog id="commentDialog">
+<div class="dialogInner"><h3 id="commentTitle">コメント</h3><div id="commentList" class="commentList"></div><textarea id="commentText" rows="4" placeholder="確認事項や補足を入力"></textarea><div class="dialogActions"><button id="closeComment" class="button" type="button">閉じる</button><button id="addComment" class="button primary" type="button">コメント追加</button></div></div>
+</dialog>
+<script src="./app.js?v=1"></script>
+</body>
+</html>
