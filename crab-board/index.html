@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>カニ掲示板</title>
-<link rel="stylesheet" href="./style.css?v=1">
+<link rel="stylesheet" href="./style.css?v=2">
 </head>
 <body>
 <div class="app">
@@ -13,6 +13,10 @@
 <button id="refreshBtn" class="iconBtn" type="button">↻ 更新</button>
 </header>
 <nav id="tabs" class="tabs" aria-label="取引先の絞り込み"></nav>
+<section class="yearBar" aria-label="表示する年">
+<div id="quickYears" class="quickYears"></div>
+<label class="yearSelectLabel">年を選択<select id="yearSelect"></select></label>
+</section>
 <section class="composer card">
 <div class="composerTitle">新しい投稿</div>
 <label class="label" for="partnerSelect">取引先</label>
@@ -30,6 +34,6 @@
 <main id="feed" class="feed" aria-live="polite"></main>
 </div>
 <dialog id="imageDialog" class="imageDialog"><button id="closeImageDialog" type="button">閉じる</button><img id="dialogImage" alt="投稿画像"></dialog>
-<script src="./app.js?v=1"></script>
+<script src="./app.js?v=2"></script>
 </body>
 </html>
