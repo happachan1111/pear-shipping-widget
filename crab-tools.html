@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>カニ ツール編集画面</title>
+<style>
+:root{--main:#b84a3a;--soft:#fff1ef;--line:#edc8c3;--text:#3b2927}*{box-sizing:border-box}html,body{height:100%;margin:0;font-family:-apple-system,BlinkMacSystemFont,'Noto Sans JP',Meiryo,sans-serif;color:var(--text);background:#fff9f8}body{display:flex;flex-direction:column;overflow:hidden}.header{flex:0 0 auto;padding:10px 12px 8px;background:#fff;border-bottom:1px solid var(--line)}.top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}.title{font-size:18px;font-weight:900;color:#8f3028}.subtitle{font-size:12px;color:#786562;margin-top:2px}.openBtn{border:1px solid var(--line);background:#fff;color:#8f3028;border-radius:9px;padding:8px 11px;font-weight:800;text-decoration:none;white-space:nowrap}.tabs{display:grid;grid-template-columns:repeat(4,minmax(120px,1fr));gap:7px;overflow-x:auto;padding-bottom:2px}.tab{border:1px solid var(--line);background:var(--soft);color:#8f3028;border-radius:10px;padding:9px 8px;font-weight:900;cursor:pointer;white-space:nowrap}.tab.active{background:var(--main);border-color:var(--main);color:#fff}.frameWrap{position:relative;flex:1;min-height:0}.loading{position:absolute;inset:0;display:grid;place-items:center;color:#786562;background:#fff9f8}.toolFrame{position:relative;z-index:1;width:100%;height:100%;border:0;background:#fff}.hint{font-size:11px;color:#806e6b;margin-top:6px}@media(max-width:760px){.header{padding:8px}.top{align-items:flex-start}.title{font-size:16px}.subtitle{display:none}.tabs{grid-template-columns:repeat(4,140px)}.tab{padding:9px 6px}.openBtn{font-size:12px;padding:7px 9px}}
+</style>
+</head>
+<body>
+<header class="header">
+<div class="top"><div><div class="title">🦀 カニ ツール編集画面</div><div class="subtitle">上のタブから、編集・確認したいツールを選んでください。</div></div><a id="openBtn" class="openBtn" target="_blank" rel="noopener">現在の画面だけ開く ↗</a></div>
+<nav id="tabs" class="tabs" aria-label="ツール切り替え"></nav>
+<div class="hint">せり情報・受注発注締切・発注出荷件数・カニ掲示板を、この画面から切り替えられます。</div>
+</header>
+<main class="frameWrap"><div id="loading" class="loading">読み込み中...</div><iframe id="toolFrame" class="toolFrame" title="カニツール"></iframe></main>
+<script>
+const tools=[
+{id:'auction',label:'せり情報',url:'./crab-auction/index.html?v=7'},
+{id:'deadline',label:'受注・発注締切',url:'./crab-deadline/index.html?v=2'},
+{id:'orders',label:'発注・出荷件数',url:'./crab-orders/index.html?v=14'},
+{id:'board',label:'カニ掲示板',url:'./crab-board/index.html?v=4'}
+];
+const tabs=document.getElementById('tabs'),frame=document.getElementById('toolFrame'),loading=document.getElementById('loading'),openBtn=document.getElementById('openBtn');
+function select(id,writeUrl=true){const tool=tools.find(x=>x.id===id)||tools[0];tabs.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.id===tool.id));loading.style.display='grid';frame.src=tool.url;frame.title='カニ '+tool.label;openBtn.href=tool.url;if(writeUrl){const u=new URL(location.href);u.searchParams.set('tab',tool.id);history.replaceState(null,'',u)}}
+tabs.innerHTML=tools.map(t=>`<button type="button" class="tab" data-id="${t.id}">${t.label}</button>`).join('');
+tabs.querySelectorAll('.tab').forEach(b=>b.onclick=()=>select(b.dataset.id));frame.onload=()=>loading.style.display='none';
+select(new URLSearchParams(location.search).get('tab')||'auction',false);
+</script>
+</body>
+</html>
