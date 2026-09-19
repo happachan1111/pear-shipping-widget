@@ -3,77 +3,68 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>母の日｜運営リンク</title>
+  <title>母の日｜運営ウィジェット</title>
   <style>
-    :root{--ink:#2c2c2b;--muted:#7d7a75;--canvas:#fff;--surface:#f9f8f7;--border:#e6e5e3;--pink:#d96c91;--pink-soft:#fff0f5;--blue:#2783de;--blue-soft:#e5f2fc;--orange:#d5803b;--orange-soft:#fbebde;--green:#46a171;--green-soft:#e8f1ec}
-    *{box-sizing:border-box}
-    html,body{margin:0;min-height:100%;font-family:Arial,"Noto Sans JP",sans-serif;color:var(--ink);background:transparent}
-    body{padding:16px}
+    :root{--ink:#2c2c2b;--muted:#716e69;--canvas:#fff;--surface:#f9f8f7;--border:#e6e5e3;--pink:#c94f79;--pink-soft:#fff0f5;--blue:#2783de;--blue-soft:#e5f2fc;--green:#3d8f65;--green-soft:#e8f1ec;--orange:#b9692f;--orange-soft:#fbebde}
+    *{box-sizing:border-box} html,body{margin:0;min-height:100%;font-family:Arial,"Noto Sans JP",sans-serif;color:var(--ink);background:transparent} body{padding:12px}
     .widget{max-width:980px;margin:auto;background:var(--canvas);border:1px solid var(--border);border-radius:12px;overflow:hidden}
-    header{display:flex;align-items:center;gap:14px;padding:18px 20px;border-bottom:1px solid var(--border);background:linear-gradient(135deg,#fff 0%,var(--pink-soft) 100%)}
-    .mark{width:46px;height:46px;display:grid;place-items:center;border-radius:10px;background:#fff;border:1px solid #f3cedb;font-size:25px}
-    h1{font-size:22px;line-height:1.2;margin:0}
-    header p{margin:5px 0 0;color:var(--muted);font-size:14px}
-    main{padding:16px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
-    .card{display:flex;flex-direction:column;min-height:150px;padding:16px;border:1px solid var(--border);border-radius:10px;background:var(--surface)}
-    .card-icon{font-size:25px;line-height:1;margin-bottom:12px}
-    .card h2{font-size:16px;margin:0 0 6px}
-    .card p{font-size:13px;line-height:1.5;color:var(--muted);margin:0 0 14px}
-    .actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto}
-    a{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 12px;border-radius:8px;text-decoration:none;font-weight:700;font-size:13px;border:1px solid transparent;transition:.15s ease}
-    a:focus-visible{outline:3px solid rgba(39,131,222,.28);outline-offset:2px}
-    a:hover{transform:translateY(-1px);filter:brightness(.98)}
-    .schedule a{background:var(--blue-soft);color:#1768ad;border-color:#cce5f8}
-    .info a{background:var(--pink-soft);color:#a74667;border-color:#f2cfdb}
-    .summary a{background:var(--green-soft);color:#307a55;border-color:#cfe5d8}
-    .cloud a{background:var(--orange-soft);color:#9a5825;border-color:#f0d5bf}
-    footer{padding:10px 18px;border-top:1px solid var(--border);color:var(--muted);font-size:12px;text-align:right}
-    @media(max-width:760px){body{padding:8px}main{grid-template-columns:1fr 1fr}.widget{border-radius:10px}header{padding:16px}.card{min-height:145px}}
-    @media(max-width:460px){main{grid-template-columns:1fr}.card{min-height:auto}header p{font-size:13px}}
+    header{display:flex;align-items:center;gap:13px;padding:16px 18px;background:linear-gradient(135deg,#fff 0%,var(--pink-soft) 100%);border-bottom:1px solid var(--border)}
+    .mark{width:44px;height:44px;display:grid;place-items:center;border:1px solid #f3cedb;border-radius:10px;background:#fff;font-size:24px} h1{font-size:21px;margin:0} header p{margin:4px 0 0;color:var(--muted);font-size:13px}
+    .tabs{display:flex;gap:4px;padding:10px 12px 0;border-bottom:1px solid var(--border);overflow:auto;background:#fff}
+    .tab{appearance:none;border:0;background:transparent;color:var(--muted);font-weight:700;font-size:13px;padding:10px 13px;border-radius:8px 8px 0 0;cursor:pointer;white-space:nowrap}.tab[aria-selected="true"]{color:var(--pink);background:var(--pink-soft)}.tab:focus-visible{outline:3px solid rgba(39,131,222,.25);outline-offset:1px}
+    .panel{display:none;padding:14px}.panel.active{display:block}.section-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}.section-title h2{font-size:16px;margin:0}.badge{font-size:12px;padding:5px 8px;border-radius:6px;background:var(--surface);color:var(--muted);border:1px solid var(--border)}
+    .table-wrap{border:1px solid var(--border);border-radius:9px;overflow:auto}table{width:100%;border-collapse:collapse;font-size:13px}th{background:var(--surface);text-align:left;color:var(--muted);font-size:12px}th,td{padding:10px 11px;border-bottom:1px solid var(--border);vertical-align:top}tr:last-child td{border-bottom:0}.done{color:var(--green);font-weight:700}.qty{white-space:nowrap}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.card{border:1px solid var(--border);border-radius:9px;padding:15px;background:var(--surface)}.card h3{font-size:15px;margin:0 0 8px}.metric{font-size:26px;font-weight:800;margin:4px 0;color:var(--pink)}.muted{font-size:13px;line-height:1.55;color:var(--muted);margin:0}.empty{display:grid;place-items:center;text-align:center;min-height:150px;border:1px dashed #d8d6d2;border-radius:9px;background:var(--surface);padding:20px}.empty .icon{font-size:28px;margin-bottom:8px}.empty h3{font-size:15px;margin:0 0 6px}
+    footer{padding:9px 16px;border-top:1px solid var(--border);font-size:11px;color:var(--muted);text-align:right}
+    @media(max-width:650px){body{padding:7px}.grid{grid-template-columns:1fr}th:nth-child(3),td:nth-child(3){display:none}.panel{padding:10px}header{padding:14px}.widget{border-radius:10px}}
   </style>
 </head>
 <body>
-  <section class="widget" aria-label="母の日運営リンク">
-    <header>
-      <div class="mark" aria-hidden="true">🌺</div>
-      <div><h1>母の日｜運営リンク</h1><p>必要な情報を、この画面からすぐ開けます。</p></div>
-    </header>
-    <main>
-      <article class="card schedule">
-        <div class="card-icon" aria-hidden="true">📅</div>
-        <h2>スケジュール</h2>
-        <p>母の日の予定、締切、進行状況を確認します。</p>
-        <div class="actions"><a href="#" data-page-id="2721f33eb7c680f488c3d3f0d721b6e3" target="_blank" rel="noopener noreferrer">開く ↗</a></div>
-      </article>
-      <article class="card info">
-        <div class="card-icon" aria-hidden="true">🌸</div>
-        <h2>関連情報</h2>
-        <p>計画数とカード同梱率を確認します。</p>
-        <div class="actions">
-          <a href="#" data-page-id="3131f33eb7c680d1a47ff1bee4102a24" target="_blank" rel="noopener noreferrer">計画数 ↗</a>
-          <a href="#" data-page-id="32e1f33eb7c680b39c2dd098d64c2a5b" target="_blank" rel="noopener noreferrer">同梱率 ↗</a>
-        </div>
-      </article>
-      <article class="card summary">
-        <div class="card-icon" aria-hidden="true">🧮</div>
-        <h2>集計</h2>
-        <p>取引先ごとの最新集計データを確認します。</p>
-        <div class="actions"><a href="#" data-page-id="3081f33eb7c6804a9088d426b1f4e568" target="_blank" rel="noopener noreferrer">開く ↗</a></div>
-      </article>
-      <article class="card cloud">
-        <div class="card-icon" aria-hidden="true">☁️</div>
-        <h2>伝票発行クラウド</h2>
-        <p>利用URLを後から登録・更新できる管理欄です。</p>
-        <div class="actions"><a href="#" data-page-id="1583cc4e32c348c7abaa6097b31f6976" target="_blank" rel="noopener noreferrer">URL管理 ↗</a></div>
-      </article>
-    </main>
-    <footer>Mother's Day Operations</footer>
-  </section>
-  <script>
-    const notionBase = ['https://www', 'notion', 'so'].join('.');
-    document.querySelectorAll('[data-page-id]').forEach((link) => {
-      link.href = `${notionBase}/${link.dataset.pageId}`;
-    });
-  </script>
+<section class="widget" aria-label="母の日運営ウィジェット">
+  <header><div class="mark" aria-hidden="true">🌺</div><div><h1>母の日｜運営ウィジェット</h1><p>スケジュール・関連情報・集計・伝票発行クラウドを、この中で確認できます。</p></div></header>
+  <nav class="tabs" role="tablist" aria-label="表示内容">
+    <button class="tab" role="tab" aria-selected="true" aria-controls="schedule" id="tab-schedule">📅 スケジュール</button>
+    <button class="tab" role="tab" aria-selected="false" aria-controls="related" id="tab-related">🌸 関連情報</button>
+    <button class="tab" role="tab" aria-selected="false" aria-controls="summary" id="tab-summary">🧮 集計</button>
+    <button class="tab" role="tab" aria-selected="false" aria-controls="cloud" id="tab-cloud">☁️ 伝票発行クラウド</button>
+  </nav>
+  <main>
+    <section class="panel active" id="schedule" role="tabpanel" aria-labelledby="tab-schedule">
+      <div class="section-title"><h2>母の日スケジュール</h2><span class="badge">8件・すべて完了</span></div>
+      <div class="table-wrap"><table><thead><tr><th>日付</th><th>内容</th><th>数量・メモ</th><th>状態</th></tr></thead><tbody>
+        <tr><td>3/8</td><td>箪笥リーフレット（坂根屋分）</td><td class="qty">カード付2,000／なし600</td><td class="done">完了</td></tr>
+        <tr><td>3/8</td><td>母の日カード</td><td class="qty">4,130</td><td class="done">完了</td></tr>
+        <tr><td>3/8</td><td>上生リーフレット（坂根屋）</td><td class="qty">2,100</td><td class="done">完了</td></tr>
+        <tr><td>3/8</td><td>上生リーフレット（福田屋）</td><td class="qty">8,500</td><td class="done">完了</td></tr>
+        <tr><td>3/8</td><td>箪笥リーフレット（福田屋分）</td><td class="qty">カード付6,500／なし3,000</td><td class="done">完了</td></tr>
+        <tr><td>3/8</td><td>自社パンフ</td><td class="qty">3,750</td><td class="done">完了</td></tr>
+        <tr><td>3/17</td><td>坂根屋詰合せリーフレット</td><td class="qty">カード付300／なし150</td><td class="done">完了</td></tr>
+        <tr><td>4/14</td><td>日比谷花壇パンフレットセット</td><td>母700・OPP700・山陰1,000</td><td class="done">完了</td></tr>
+      </tbody></table></div>
+    </section>
+    <section class="panel" id="related" role="tabpanel" aria-labelledby="tab-related" hidden>
+      <div class="section-title"><h2>関連情報</h2><span class="badge">現在の登録内容</span></div>
+      <div class="grid">
+        <article class="card"><h3>⏰ 計画数</h3><div class="metric">2026年</div><p class="muted">2026年度の計画ページが登録されています。最終更新：2026年3月3日</p></article>
+        <article class="card"><h3>🎴 カード同梱率</h3><div class="metric">未入力</div><p class="muted">2025年度の枠はありますが、取引先・期間・全体数・カード有の数値は未入力です。</p></article>
+      </div>
+    </section>
+    <section class="panel" id="summary" role="tabpanel" aria-labelledby="tab-summary" hidden>
+      <div class="section-title"><h2>集計</h2><span class="badge">母の日</span></div>
+      <div class="empty"><div><div class="icon">🧮</div><h3>集計データはまだありません</h3><p class="muted">集計データが登録されたら、この欄に表示します。</p></div></div>
+    </section>
+    <section class="panel" id="cloud" role="tabpanel" aria-labelledby="tab-cloud" hidden>
+      <div class="section-title"><h2>伝票発行クラウド</h2><span class="badge">準備中</span></div>
+      <div class="empty"><div><div class="icon">☁️</div><h3>URLはまだ登録されていません</h3><p class="muted">サービス名・URL・注意事項を登録後、この欄に表示します。</p></div></div>
+    </section>
+  </main>
+  <footer>データ反映：2026年9月19日時点</footer>
+</section>
+<script>
+  const tabs=[...document.querySelectorAll('.tab')];
+  const panels=[...document.querySelectorAll('.panel')];
+  function activate(tab){tabs.forEach(t=>t.setAttribute('aria-selected',String(t===tab)));panels.forEach(p=>{const on=p.id===tab.getAttribute('aria-controls');p.classList.toggle('active',on);p.hidden=!on;});}
+  tabs.forEach(tab=>tab.addEventListener('click',()=>activate(tab)));
+</script>
 </body>
 </html>
