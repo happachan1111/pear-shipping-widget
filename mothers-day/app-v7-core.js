@@ -1,5 +1,5 @@
 const API='https://flat-disk-51b0.sasaki-8ef.workers.dev';
-const EVENTS={mother:{label:'母の日',scheduleType:'mothers_day_schedule',month:5},father:{label:'父の日',scheduleType:'fathers_day_schedule',month:6},aged:{label:'敬老の日',scheduleType:'respect_for_aged_day_schedule',month:9},valentine:{label:'バレホワ',scheduleType:'valentine_white_day_schedule',month:2}};
+const EVENTS={mother:{label:'母の日',scheduleType:'mothers_day_schedule',month:5},father:{label:'父の日',scheduleType:'fathers_day_schedule',month:6},aged:{label:'敬老の日',scheduleType:'respect_for_aged_day_schedule',month:9},valentine:{label:'バレンタイン',scheduleType:'valentine_white_day_schedule',month:2},white:{label:'ﾎﾜｲﾄﾃﾞｰ',scheduleType:'white_day_schedule',month:3}};
 const $=id=>document.getElementById(id),currentYear=new Date().getFullYear(),fmt=n=>Number(n||0).toLocaleString('ja-JP');
 let activeEvent=new URLSearchParams(location.search).get('event')||'mother';if(!EVENTS[activeEvent])activeEvent='mother';
 let scheduleRows=[],forecastRows=[],cardRows=[],invoiceRows=[],remoteIds=new Set(),scheduleYear=currentYear,scheduleMonth=EVENTS[activeEvent].month,forecastYear=currentYear,invoiceYear=currentYear,invoicePartner='福田屋',pendingDelete=null;
