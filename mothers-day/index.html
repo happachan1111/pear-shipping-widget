@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>母の日｜運営リンク</title>
+  <style>
+    :root{--ink:#2c2c2b;--muted:#7d7a75;--canvas:#fff;--surface:#f9f8f7;--border:#e6e5e3;--pink:#d96c91;--pink-soft:#fff0f5;--blue:#2783de;--blue-soft:#e5f2fc;--orange:#d5803b;--orange-soft:#fbebde;--green:#46a171;--green-soft:#e8f1ec}
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;font-family:Arial,"Noto Sans JP",sans-serif;color:var(--ink);background:transparent}
+    body{padding:16px}
+    .widget{max-width:980px;margin:auto;background:var(--canvas);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+    header{display:flex;align-items:center;gap:14px;padding:18px 20px;border-bottom:1px solid var(--border);background:linear-gradient(135deg,#fff 0%,var(--pink-soft) 100%)}
+    .mark{width:46px;height:46px;display:grid;place-items:center;border-radius:10px;background:#fff;border:1px solid #f3cedb;font-size:25px}
+    h1{font-size:22px;line-height:1.2;margin:0}
+    header p{margin:5px 0 0;color:var(--muted);font-size:14px}
+    main{padding:16px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+    .card{display:flex;flex-direction:column;min-height:150px;padding:16px;border:1px solid var(--border);border-radius:10px;background:var(--surface)}
+    .card-icon{font-size:25px;line-height:1;margin-bottom:12px}
+    .card h2{font-size:16px;margin:0 0 6px}
+    .card p{font-size:13px;line-height:1.5;color:var(--muted);margin:0 0 14px}
+    .actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto}
+    a{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 12px;border-radius:8px;text-decoration:none;font-weight:700;font-size:13px;border:1px solid transparent;transition:.15s ease}
+    a:focus-visible{outline:3px solid rgba(39,131,222,.28);outline-offset:2px}
+    a:hover{transform:translateY(-1px);filter:brightness(.98)}
+    .schedule a{background:var(--blue-soft);color:#1768ad;border-color:#cce5f8}
+    .info a{background:var(--pink-soft);color:#a74667;border-color:#f2cfdb}
+    .summary a{background:var(--green-soft);color:#307a55;border-color:#cfe5d8}
+    .cloud a{background:var(--orange-soft);color:#9a5825;border-color:#f0d5bf}
+    footer{padding:10px 18px;border-top:1px solid var(--border);color:var(--muted);font-size:12px;text-align:right}
+    @media(max-width:760px){body{padding:8px}main{grid-template-columns:1fr 1fr}.widget{border-radius:10px}header{padding:16px}.card{min-height:145px}}
+    @media(max-width:460px){main{grid-template-columns:1fr}.card{min-height:auto}header p{font-size:13px}}
+  </style>
+</head>
+<body>
+  <section class="widget" aria-label="母の日運営リンク">
+    <header>
+      <div class="mark" aria-hidden="true">🌺</div>
+      <div><h1>母の日｜運営リンク</h1><p>必要な情報を、この画面からすぐ開けます。</p></div>
+    </header>
+    <main>
+      <article class="card schedule">
+        <div class="card-icon" aria-hidden="true">📅</div>
+        <h2>スケジュール</h2>
+        <p>母の日の予定、締切、進行状況を確認します。</p>
+        <div class="actions"><a href="#" data-page-id="2721f33eb7c680f488c3d3f0d721b6e3" target="_blank" rel="noopener noreferrer">開く ↗</a></div>
+      </article>
+      <article class="card info">
+        <div class="card-icon" aria-hidden="true">🌸</div>
+        <h2>関連情報</h2>
+        <p>計画数とカード同梱率を確認します。</p>
+        <div class="actions">
+          <a href="#" data-page-id="3131f33eb7c680d1a47ff1bee4102a24" target="_blank" rel="noopener noreferrer">計画数 ↗</a>
+          <a href="#" data-page-id="32e1f33eb7c680b39c2dd098d64c2a5b" target="_blank" rel="noopener noreferrer">同梱率 ↗</a>
+        </div>
+      </article>
+      <article class="card summary">
+        <div class="card-icon" aria-hidden="true">🧮</div>
+        <h2>集計</h2>
+        <p>取引先ごとの最新集計データを確認します。</p>
+        <div class="actions"><a href="#" data-page-id="3081f33eb7c6804a9088d426b1f4e568" target="_blank" rel="noopener noreferrer">開く ↗</a></div>
+      </article>
+      <article class="card cloud">
+        <div class="card-icon" aria-hidden="true">☁️</div>
+        <h2>伝票発行クラウド</h2>
+        <p>利用URLを後から登録・更新できる管理欄です。</p>
+        <div class="actions"><a href="#" data-page-id="1583cc4e32c348c7abaa6097b31f6976" target="_blank" rel="noopener noreferrer">URL管理 ↗</a></div>
+      </article>
+    </main>
+    <footer>Mother's Day Operations</footer>
+  </section>
+  <script>
+    const notionBase = ['https://www', 'notion', 'so'].join('.');
+    document.querySelectorAll('[data-page-id]').forEach((link) => {
+      link.href = `${notionBase}/${link.dataset.pageId}`;
+    });
+  </script>
+</body>
+</html>
