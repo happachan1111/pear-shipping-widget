@@ -1,0 +1,1 @@
+(()=>{document.title='イベント一覧';const s=document.createElement('style');s.textContent='.widget>header{display:none!important}';document.head.appendChild(s)})();
