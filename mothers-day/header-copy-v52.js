@@ -1,0 +1,1 @@
+(()=>{const mark=document.querySelector('header .mark'),copy=document.querySelector('header h1+ p');if(mark)mark.textContent='🎪';if(copy)copy.textContent='季節イベントと梨・柿・カニの情報を、ここからまとめて確認・更新できます。';})();
