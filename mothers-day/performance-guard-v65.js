@@ -1,0 +1,1 @@
+(()=>{if(window.__performanceGuard65)return;window.__performanceGuard65=true;const native=window.setInterval.bind(window);window.setInterval=(fn,ms,...args)=>{const id=native(fn,ms,...args);if(Number(ms)<=300)setTimeout(()=>clearInterval(id),6000);return id}})();
