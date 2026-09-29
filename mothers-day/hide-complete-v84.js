@@ -1,1 +1,1 @@
-(()=>{const box=document.getElementById('scheduleDone');if(box){const label=box.closest('label');if(label)label.style.display='none';else box.style.display='none'}})();
+(()=>{const remove=()=>{const box=document.getElementById('scheduleDone');if(box)(box.closest('label')||box).remove();document.querySelectorAll('#scheduleForm .check').forEach(x=>x.remove());document.querySelectorAll('#calendar .event.done').forEach(x=>x.classList.remove('done'))};remove();new MutationObserver(remove).observe(document.body,{subtree:true,childList:true})})();
