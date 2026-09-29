@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="季節イベント管理">
+  <rect width="512" height="512" rx="112" fill="#376f93"/>
+  <circle cx="430" cy="55" r="145" fill="#4b89ae"/>
+  <rect x="102" y="103" width="308" height="307" rx="48" fill="#fff"/>
+  <path d="M102 151a48 48 0 0 1 48-48h212a48 48 0 0 1 48 48v39H102z" fill="#f4f7f9"/>
+  <rect x="167" y="78" width="32" height="75" rx="16" fill="#2b526b"/>
+  <rect x="313" y="78" width="32" height="75" rx="16" fill="#2b526b"/>
+  <circle cx="175" cy="246" r="25" fill="#c94f79"/>
+  <circle cx="256" cy="246" r="25" fill="#477fb3"/>
+  <circle cx="337" cy="246" r="25" fill="#d97706"/>
+  <circle cx="175" cy="326" r="25" fill="#8b5a3c"/>
+  <circle cx="256" cy="326" r="25" fill="#4f8554"/>
+  <circle cx="337" cy="326" r="25" fill="#b84a3a"/>
+</svg>
