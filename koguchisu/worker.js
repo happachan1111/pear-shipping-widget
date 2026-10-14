@@ -14,13 +14,13 @@ export function validate(data){if(!data||typeof data!=='object'||Array.isArray(d
 function properties(d,before){const out={};for(const [key,name]of Object.entries(labels)){if(before&&d[key]===before[key])continue;if(key==='name')out[name]={title:rt(d[key])};else if(key==='max')out[name]={number:d.max};else if(['vendor','category','mark'].includes(key))out[name]={select:d[key]?{name:d[key]}:null};else out[name]={rich_text:rt(d[key])};}return out;}
 export default {async fetch(request,env,ctx){
  const url=new URL(request.url),origin=url.origin;
- const callerOrigin=request.headers.get('Origin');const allowedOrigins=new Set([origin,'https://happachan1111.github.io']);const originAllowed=allowedOrigins.has(callerOrigin);
- const cors=originAllowed?{'Access-Control-Allow-Origin':callerOrigin,'Access-Control-Allow-Methods':'GET,POST,PUT,DELETE,OPTIONS','Access-Control-Allow-Headers':'Content-Type'}:{};
+ const callerOrigin=request.headers.get('Origin');const originAllowed=callerOrigin!==null;
+ const cors={'Access-Control-Allow-Origin':'*','Access-Control-Allow-Methods':'GET,POST,PUT,DELETE,OPTIONS','Access-Control-Allow-Headers':'Content-Type'};
  const security={...cors,'Vary':'Origin','Cache-Control':'no-store','X-Content-Type-Options':'nosniff','Referrer-Policy':'no-referrer','Content-Security-Policy':"default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://koguchisu.sasaki-8ef.workers.dev; base-uri 'none'; form-action 'none'; frame-ancestors https://*.notion.so https://*.notion.com https://notion.so https://notion.com https://*.iframe.ly https://iframe.ly https://happachan1111.github.io"};
  const json=(data,status=200)=>new Response(JSON.stringify(data),{status,headers:{...security,'Content-Type':'application/json; charset=utf-8'}});
  let stage='接続';
  try{
-  // CORS and Origin checks reduce unintended browser requests; they are NOT authentication.
+  // Owner approved public read/write. CORS supports GitHub and sandboxed Notion HTML; it is NOT authentication.
   if(url.pathname.startsWith('/api/')&&request.method==='OPTIONS')return originAllowed?new Response(null,{status:204,headers:security}):json({error:'この画面から操作してください。'},403);
   if(!url.pathname.startsWith('/api/')){
    if(request.method!=='GET')return json({error:'Method not allowed'},405);
