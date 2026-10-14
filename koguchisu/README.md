@@ -1,16 +1,17 @@
 # 個口数一覧
 
-GitHubで画面を管理し、認証付きの専用Cloudflare WorkerからNotionの個口数マスターを読み書きします。商品データ・APIキーはこのリポジトリに保存しません。
+GitHubで画面を管理し、ログイン不要の専用Cloudflare WorkerからNotionの個口数マスターを読み書きします。商品データ・APIキーはこのリポジトリに保存しません。
 
 - `index.html` / `style.css` / `app.js`: 表示・検索・追加・編集・削除画面
-- `worker.js`: 同一オリジンのAPI。Cloudflare Accessで認証されたリクエストのみ受け付けます。
-- 専用画面: https://koguchisu.sasaki-8ef.workers.dev/
+- `worker.js`: 公開API。対象マスターに限定した項目を読み書きします。GitHub PagesとのCORSに対応します。
+- 埋め込み画面: https://happachan1111.github.io/pear-shipping-widget/koguchisu/
+- API・予備画面: https://koguchisu.sasaki-8ef.workers.dev/
 
 ## 設定
 
 既存の他のWorkerとは分けてデプロイしてください。
 
-1. 全トラフィックをCloudflare Accessで保護する。
+1. この専用Workerは、所有者の明示的な依頼によりCloudflare Accessを使いません。他のWorkerの保護設定は変更しないでください。
 2. `NOTION_TOKEN` を**Secret**として設定する。読み取り・追加・更新権限を持つ専用の内部接続を使い、対象マスターだけにアクセスを許可する。
 3. `NOTION_DATA_SOURCE_ID` を対象マスターのデータソースIDとして設定する。
 4. `worker.js`をデプロイする。HTML・JS・CSSはこのディレクトリのmainブランチから配信する。
@@ -23,9 +24,9 @@ GitHubで画面を管理し、認証付きの専用Cloudflare WorkerからNotion
 - 最終更新日時が変わっている場合は保存を止めます。ただしNotion APIの読み取りと書き込みは原子的ではなく、同時編集の完全なロックではありません。
 - 削除はNotionのゴミ箱への移動です。復元はNotion側で行います。
 - 通信エラーの後は、再送する前に一覧を再読み込みして保存結果を確認してください。書き込みの自動再試行はしません。
-- GitHub Pages版は認証付き専用画面への案内のみ。マスターを公開しません。
-- Notionの埋め込み内でログインできない場合は、専用画面を別タブで開いてログインしてください。第三者Cookieの設定によっては別タブで利用する必要があります。
+- GitHub PagesのHTMLから専用Worker APIへ接続します。ログインやCookieは使用しません。
+- API接続キーはCloudflareのSecretにのみ保存します。HTMLやGitHubには保存しません。
 
 ## 公開範囲
 
-初期のAccessポリシーはCloudflareアカウントメンバーのみ。Notionページの共有だけではこの画面の利用権限は付与されません。共同利用のために保護を外さないでください。
+所有者が社外からも変更・削除できる点を確認したうえで、閲覧・追加・変更・削除すべてログイン不要を明示的に承認しました。URLを知る人は操作できます。Notionページの共有権限は外部HTMLやAPIを保護しません。CORSやOriginチェックは認証ではありません。入力検証・対象データソースの照合・更新競合チェック・ゴミ箱への削除は維持しています。

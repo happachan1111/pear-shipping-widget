@@ -1,4 +1,4 @@
-// Deploy as a separate Cloudflare Worker, protected by Access for ALL traffic.
+// Public read/write endpoint: explicitly approved by the owner. No user login.
 // Secret: NOTION_TOKEN. Plain variable: NOTION_DATA_SOURCE_ID.
 const ASSETS='https://raw.githubusercontent.com/happachan1111/pear-shipping-widget/main/koguchisu/';
 const VERSION='2026-03-11';
@@ -14,12 +14,14 @@ export function validate(data){if(!data||typeof data!=='object'||Array.isArray(d
 function properties(d,before){const out={};for(const [key,name]of Object.entries(labels)){if(before&&d[key]===before[key])continue;if(key==='name')out[name]={title:rt(d[key])};else if(key==='max')out[name]={number:d.max};else if(['vendor','category','mark'].includes(key))out[name]={select:d[key]?{name:d[key]}:null};else out[name]={rich_text:rt(d[key])};}return out;}
 export default {async fetch(request,env,ctx){
  const url=new URL(request.url),origin=url.origin;
- const security={'Cache-Control':'no-store','X-Content-Type-Options':'nosniff','Referrer-Policy':'no-referrer','Content-Security-Policy':"default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors https://*.notion.so https://*.notion.com https://notion.so https://notion.com"};
+ const callerOrigin=request.headers.get('Origin');const allowedOrigins=new Set([origin,'https://happachan1111.github.io']);const originAllowed=allowedOrigins.has(callerOrigin);
+ const cors=originAllowed?{'Access-Control-Allow-Origin':callerOrigin,'Access-Control-Allow-Methods':'GET,POST,PUT,DELETE,OPTIONS','Access-Control-Allow-Headers':'Content-Type'}:{};
+ const security={...cors,'Vary':'Origin','Cache-Control':'no-store','X-Content-Type-Options':'nosniff','Referrer-Policy':'no-referrer','Content-Security-Policy':"default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://koguchisu.sasaki-8ef.workers.dev; base-uri 'none'; form-action 'none'; frame-ancestors https://*.notion.so https://*.notion.com https://notion.so https://notion.com https://*.iframe.ly https://iframe.ly https://happachan1111.github.io"};
  const json=(data,status=200)=>new Response(JSON.stringify(data),{status,headers:{...security,'Content-Type':'application/json; charset=utf-8'}});
- let stage='認証';
+ let stage='接続';
  try{
-  // This platform-provided object cannot be forged by request headers.
-  if(!ctx?.access)return json({error:'Cloudflare Accessでログインしてください。'},403);
+  // CORS and Origin checks reduce unintended browser requests; they are NOT authentication.
+  if(url.pathname.startsWith('/api/')&&request.method==='OPTIONS')return originAllowed?new Response(null,{status:204,headers:security}):json({error:'この画面から操作してください。'},403);
   if(!url.pathname.startsWith('/api/')){
    if(request.method!=='GET')return json({error:'Method not allowed'},405);
    const filename=url.pathname==='/'?'index.html':url.pathname.slice(1);
@@ -36,7 +38,7 @@ export default {async fetch(request,env,ctx){
    stage='選択肢整形';return json({rows:results,complete:!more,vendors:(schema.properties['取引先']?.select?.options||[]).map(x=>x.name),loadedAt:new Date().toISOString()});
   }
   if(!['POST','PUT','DELETE'].includes(request.method))return json({error:'Not found'},404);
-  if(request.headers.get('Origin')!==origin||!request.headers.get('Content-Type')?.startsWith('application/json'))return json({error:'この画面から操作してください。'},403);
+  if(!originAllowed||!request.headers.get('Content-Type')?.startsWith('application/json'))return json({error:'この画面から操作してください。'},403);
   if(Number(request.headers.get('Content-Length')||0)>16000)return json({error:'入力が大きすぎます。'},413);
   const raw=await request.text();if(raw.length>16000)return json({error:'入力が大きすぎます。'},413);let body;try{body=JSON.parse(raw)}catch{throw new ApiError(400,'入力形式が正しくありません。')}
   if(url.pathname==='/api/products'&&request.method==='POST'){const d=validate(body);if(d.vendor==='新しい取引先を入力')d.vendor=d.newVendor;const props=properties(d);props['有効']={checkbox:true};const created=await notion('/pages',{method:'POST',body:JSON.stringify({parent:{type:'data_source_id',data_source_id:env.NOTION_DATA_SOURCE_ID},properties:props})});return json({row:normalize(created)},201);}
