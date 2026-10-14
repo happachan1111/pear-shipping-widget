@@ -16,6 +16,7 @@ export default {async fetch(request,env,ctx){
  const url=new URL(request.url),origin=url.origin;
  const security={'Cache-Control':'no-store','X-Content-Type-Options':'nosniff','Referrer-Policy':'no-referrer','Content-Security-Policy':"default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors https://*.notion.so https://*.notion.com https://notion.so https://notion.com"};
  const json=(data,status=200)=>new Response(JSON.stringify(data),{status,headers:{...security,'Content-Type':'application/json; charset=utf-8'}});
+ let stage='認証';
  try{
   // This platform-provided object cannot be forged by request headers.
   if(!ctx?.access)return json({error:'Cloudflare Accessでログインしてください。'},403);
@@ -30,9 +31,9 @@ export default {async fetch(request,env,ctx){
   if(!env.NOTION_TOKEN||!uuid.test(env.NOTION_DATA_SOURCE_ID||''))return json({error:'Notionとの接続設定が未完了です。'},503);
   async function notion(path,opt={}){const res=await fetch('https://api.notion.com/v1'+path,{...opt,headers:{'Authorization':'Bearer '+env.NOTION_TOKEN,'Notion-Version':VERSION,'Content-Type':'application/json'},redirect:'error'});if(!res.ok){if(res.status===429)throw new ApiError(429,'アクセスが集中しています。少し待って再試行してください。');if([401,403,404].includes(res.status))throw new ApiError(502,'Notion接続キーと、マスターへの接続権限を確認してください。');throw new ApiError(502,'Notionに保存できませんでした。再読み込みして確認してください。');}return res.json();}
   if(url.pathname==='/api/products'&&request.method==='GET'){
-   const schema=await notion('/data_sources/'+env.NOTION_DATA_SOURCE_ID);let results=[],cursor,more=false;
-   for(let i=0;i<50;i++){const page=await notion('/data_sources/'+env.NOTION_DATA_SOURCE_ID+'/query',{method:'POST',body:JSON.stringify({page_size:100,...(cursor?{start_cursor:cursor}:{})})});results.push(...page.results.filter(p=>p.object==='page'&&!p.in_trash&&!p.is_archived).map(normalize));more=page.has_more;if(!more)break;cursor=page.next_cursor;if(!cursor)throw new ApiError(502,'一覧の続きが取得できませんでした。');}
-   return json({rows:results,complete:!more,vendors:(schema.properties['取引先']?.select?.options||[]).map(x=>x.name),loadedAt:new Date().toISOString()});
+   stage='接続確認';const schema=await notion('/data_sources/'+env.NOTION_DATA_SOURCE_ID);let results=[],cursor,more=false;
+   for(let i=0;i<50;i++){stage='一覧取得';const page=await notion('/data_sources/'+env.NOTION_DATA_SOURCE_ID+'/query',{method:'POST',body:JSON.stringify({page_size:100,...(cursor?{start_cursor:cursor}:{})})});stage='一覧整形';results.push(...page.results.filter(p=>p.object==='page'&&!p.in_trash&&!p.is_archived).map(normalize));more=page.has_more;if(!more)break;cursor=page.next_cursor;if(!cursor)throw new ApiError(502,'一覧の続きが取得できませんでした。');}
+   stage='選択肢整形';return json({rows:results,complete:!more,vendors:(schema.properties['取引先']?.select?.options||[]).map(x=>x.name),loadedAt:new Date().toISOString()});
   }
   if(!['POST','PUT','DELETE'].includes(request.method))return json({error:'Not found'},404);
   if(request.headers.get('Origin')!==origin||!request.headers.get('Content-Type')?.startsWith('application/json'))return json({error:'この画面から操作してください。'},403);
@@ -46,5 +47,5 @@ export default {async fetch(request,env,ctx){
   if(request.method==='PUT'){const d=validate(body);if(d.vendor==='新しい取引先を入力')d.vendor=d.newVendor;const props=properties(d,normalize(page));if(!Object.keys(props).length)return json({row:normalize(page)});const updated=await notion('/pages/'+match[1],{method:'PATCH',body:JSON.stringify({properties:props})});return json({row:normalize(updated)});}
   if(request.method==='DELETE'){await notion('/pages/'+match[1],{method:'PATCH',body:JSON.stringify({in_trash:true})});return json({ok:true});}
   return json({error:'Not found'},404);
- }catch(e){return json({error:e instanceof ApiError?e.message:'通信に失敗しました。再読み込みして確認してください。'},e instanceof ApiError?e.status:500);}
+ }catch(e){return json({error:e instanceof ApiError?e.message:'通信に失敗しました。再読み込みして確認してください。（'+stage+' / '+(e?.name==='TypeError'?'TypeError':'Error')+'）'},e instanceof ApiError?e.status:500);}
 }};
