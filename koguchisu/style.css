@@ -13,3 +13,5 @@ body{font-size:16px}.shell{max-width:1200px}.eyebrow,.guide,.note,.vendorN,.coun
 .tab{white-space:nowrap;flex-shrink:0}@media(max-width:600px){.tab{padding:8px 10px}.footer{position:sticky;bottom:-16px;background:var(--canvas);padding:12px 0;border-top:1px solid var(--line)}}
 
 @media(max-width:600px){.tabs{gap:4px}.tab{padding:8px;font-size:14px}}
+
+.regions{display:flex;gap:8px;margin:8px 0}.regionTab{display:flex;align-items:center;gap:16px;min-height:52px;min-width:150px;padding:10px 16px;border:1px solid var(--line);border-radius:8px;background:var(--canvas);color:var(--muted);font:inherit;font-weight:700;cursor:pointer}.regionTab.active{border-color:var(--blue);background:var(--blueSoft);color:var(--ink)}.regionCount{font-size:14px;font-weight:400}.regionHelp{font-size:14px;color:var(--muted);margin:0 0 16px}.external{text-decoration:none;display:inline-flex;align-items:center}.regionTab:focus-visible{outline:2px solid var(--blue);outline-offset:2px}@media(max-width:600px){.regionTab{flex:1;min-width:0;justify-content:space-between;gap:8px}.tools .external{font-size:14px}}
