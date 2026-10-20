@@ -2,7 +2,7 @@
 (()=>{
 const $=id=>document.getElementById(id),base='https://happachan1111.github.io/pear-shipping-widget/';
 const events={mother:'母の日',father:'父の日',aged:'敬老の日',valentine:'バレンタイン',white:'ホワイトデー',pear:'梨・柿',crab:'カニ'};
-const routes={calendar:{label:'運営カレンダー',family:'calendar',url:new URL('calendar.html?v=10',location.href).href}};
+const routes={calendar:{label:'運営カレンダー',family:'calendar',url:new URL('calendar.html?v=11',location.href).href}};
 for(const [id,label] of Object.entries(events)){const seasonal=!['pear','crab'].includes(id);routes[id]={label:label+(seasonal?' / 予測・カード':''),event:id,panel:seasonal?'forecast':null,family:'event',url:base+'mothers-day/v84.html?event='+id+(seasonal?'&tab=forecast':'')};if(seasonal)routes[id+'-cloud']={label:label+' / 伝票発行',event:id,panel:'cloud',family:'event',url:base+'mothers-day/v84.html?event='+id+'&tab=cloud'}}
 routes['koguchisu-sanin']={label:'個口数 / 山陰',family:'parcel',url:base+'koguchisu/index.html?region='+encodeURIComponent('山陰')};routes['koguchisu-okinawa']={label:'個口数 / 沖縄',family:'parcel',url:base+'koguchisu/index.html?region='+encodeURIComponent('沖縄')};
 const small=matchMedia('(max-width:900px)');let current='home',frame=null,sequence=0,slowTimer=null,cleanup=[];
