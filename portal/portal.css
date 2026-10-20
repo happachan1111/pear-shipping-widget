@@ -6,3 +6,50 @@
 
 /* Shared sidebar section-heading size. */
 .navCalendar,.navGroup>summary{font-size:16px;font-weight:700;line-height:24px}
+
+/* v7: edge-aligned home scrolling and a compact, scannable home. */
+.home{max-width:none;margin:0;padding:0;width:100%;overflow-x:hidden;overflow-y:auto;scrollbar-gutter:stable}
+.homeInner{max-width:1200px;margin:auto;padding:32px 32px 112px}
+.homeHeading h1{font-size:28px;line-height:1.35;margin-bottom:8px}
+.homeHeading .eyebrow{margin-bottom:8px}
+.homeGrid{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);align-items:stretch;gap:24px}
+.homeCard{min-width:0;padding:24px}
+.cardHeading{margin-bottom:20px}
+.cardHeading h2{font-size:22px;margin:0 0 8px;line-height:1.35}
+.cardHeading p{color:var(--muted);margin:0}
+.eventLaunchLinks{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.launchLinks a{min-width:0;min-height:48px}
+.calendarLaunch{margin-top:24px;padding:20px 24px;min-height:116px}
+.calendarLaunch .launchKicker{color:var(--accent);font-size:14px;font-weight:600;margin-bottom:4px}
+.calendarLaunch strong{margin-bottom:4px}
+.launchArrow{font-size:24px}
+.regionLaunchLinks{gap:8px}
+.regionLaunchLinks a{padding:12px 16px}
+.regionLaunchLinks a>span:first-child{color:var(--ink)}
+.regionLaunchLinks strong{display:block;font-size:16px}
+.regionLaunchLinks small{display:block;color:var(--muted);font-size:14px;font-weight:400;margin-top:2px}
+.homeFootnote{margin-top:20px;max-width:680px}
+.supportLauncher{position:fixed;right:24px;bottom:20px;z-index:22;display:flex;gap:8px;align-items:center;justify-content:center;min-height:48px;padding:10px 16px;border:1px solid #235f83;border-radius:24px;background:#306e94;color:#fff;font:700 16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;box-shadow:0 4px 12px #0002}
+.supportLauncher:hover{background:#245a7a}
+.supportIcon{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:1.5px solid currentColor;border-radius:50%;font-size:16px;line-height:1;flex-shrink:0}
+.portalSupportDialog{padding:0;width:min(1200px,calc(100% - 24px));height:calc(100dvh - 24px);max-height:calc(100dvh - 24px);border:1px solid var(--line);border-radius:12px;background:var(--canvas);color:var(--ink)}
+.portalSupportDialog[open]{display:flex;flex-direction:column}
+.portalSupportDialog::backdrop{background:#0006}
+.supportDialogHeader{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px;border-bottom:1px solid var(--line);flex-shrink:0}
+.supportDialogHeader h2{font-size:22px;margin:0}
+.supportDialogHeader button{min-height:44px;padding:8px 12px;border:1px solid var(--line);border-radius:8px;background:var(--canvas);color:var(--ink)}
+.supportDialogBody{flex:1;min-height:0}
+.supportDialogBody iframe{display:block;width:100%;height:100%;border:0;background:var(--canvas)}
+@media(max-width:1100px){.homeGrid{grid-template-columns:1fr}.homeInner{max-width:900px}.regionLaunchLinks{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.homeInner{padding:24px 16px 100px}.homeHeading h1{font-size:26px}.homeGrid{gap:16px;margin-top:16px}.homeCard{padding:20px}.cardHeading{margin-bottom:16px}.calendarLaunch{padding:16px 20px;margin-top:20px}.calendarLaunch strong,.cardHeading h2{font-size:22px}.eventLaunchLinks{gap:8px}.launchLinks a{padding:10px 12px}.supportLauncher{right:16px;bottom:calc(16px + env(safe-area-inset-bottom));min-height:48px;padding:10px 14px;font-size:14px}.supportDialogHeader{padding:12px 16px}.supportDialogHeader h2{font-size:20px}.regionLaunchLinks{grid-template-columns:1fr}}
+@media(max-width:359px){.eventLaunchLinks{grid-template-columns:1fr}}
+
+/* Reserve a separate support dock so no link or schedule sits under the button. */
+:root{--supportDock:80px}
+.app.homeView .main{bottom:var(--supportDock)}
+.supportDock{position:fixed;left:var(--side);right:0;bottom:0;height:var(--supportDock);padding:12px 24px;display:flex;align-items:center;justify-content:flex-end;background:var(--canvas);border-top:1px solid var(--line);z-index:22}
+.supportDock .supportLauncher{position:static}
+.app:not(.menuOpen) .supportDock{left:0}
+.homeInner{padding-bottom:32px}
+@media(max-width:900px){.supportDock,.app.menuOpen .supportDock{left:0}}
+@media(max-width:600px){:root{--supportDock:calc(80px + env(safe-area-inset-bottom))}.supportDock{padding:12px 16px calc(12px + env(safe-area-inset-bottom))}.homeInner{padding-bottom:24px}.eventLaunchLinks a{white-space:nowrap}.eventLaunchLinks a span{display:none}}

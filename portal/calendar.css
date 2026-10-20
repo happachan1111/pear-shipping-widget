@@ -2,3 +2,21 @@
 @media(max-width:1050px){.calendarHeader{display:block}.headerActions{margin-top:16px}.day{padding:4px}.entry{padding:5px}.calendarApp{padding:16px}}
 @media(max-width:600px){.calendarApp{padding:20px 16px}.calendarHeader h1{font-size:26px}.controls{padding:12px}.monthControls{gap:4px}.monthControls h2{font-size:20px;min-width:126px}.monthControls input{margin:8px 0 0;width:100%}.filters{gap:12px}.filters label{flex:1;min-width:100%}.viewButtons{display:none}#gridSection{display:none!important}#listSection{display:block!important}.formBody{grid-template-columns:1fr;padding:16px}.formFooter{padding:12px}.dialogHeader{padding:12px 16px}.lead{font-size:14px}.legend{gap:8px 12px}.headerActions button{flex:1}.headerActions{display:flex}#status{line-height:1.6}}
 @media(prefers-color-scheme:dark){:root{--bg:#191919;--soft:#202020;--ink:#fff;--muted:#b0aeaa;--line:#3a3937;--blue:#88b8ed;--blueSoft:#243443}.primary{color:#152331}.primary:hover{background:#a9ccef}.eventLabel{color:var(--eventDark)}.legend i{background:var(--eventDark)}.error,.danger{color:#ffaca5!important}}
+
+/* v7: visible without scrolling; mirrors the portal home support launcher. */
+.calendarApp{padding-bottom:112px}
+.support{position:fixed;right:24px;bottom:20px;z-index:22;display:flex;gap:8px;align-items:center;justify-content:center;min-height:48px;padding:10px 16px;border:1px solid #235f83;border-radius:24px;background:#306e94;color:#fff;font-weight:700;font-size:16px;box-shadow:0 4px 12px #0002}
+.support:hover{background:#245a7a}
+.supportIcon{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:1.5px solid currentColor;border-radius:50%;font-size:16px;line-height:1;flex-shrink:0}
+.supportDialog[open]{display:flex;flex-direction:column}
+.supportDialog .dialogHeader{flex-shrink:0}
+.supportDialog iframe{display:block;flex:1;min-height:0;width:100%;height:auto;background:var(--bg)}
+@media(max-width:600px){.calendarApp{padding-bottom:100px}.support{right:16px;bottom:calc(16px + env(safe-area-inset-bottom));min-height:48px;padding:10px 14px;font-size:14px}}
+
+:root{--supportDock:80px}
+html,body{height:100%;overflow:hidden}
+.calendarViewport{height:calc(100dvh - var(--supportDock));overflow-y:auto;overflow-x:hidden;scrollbar-gutter:stable}
+.calendarApp{padding-bottom:24px}
+.calendarSupportDock{position:fixed;left:0;right:0;bottom:0;height:var(--supportDock);display:flex;align-items:center;justify-content:flex-end;padding:12px 24px;background:var(--bg);border-top:1px solid var(--line);z-index:22}
+.calendarSupportDock .support{position:static}
+@media(max-width:600px){:root{--supportDock:calc(80px + env(safe-area-inset-bottom))}.calendarSupportDock{padding:12px 16px calc(12px + env(safe-area-inset-bottom))}.calendarApp{padding-bottom:24px}}

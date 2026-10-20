@@ -2,14 +2,18 @@
 (()=>{
 const $=id=>document.getElementById(id),base='https://happachan1111.github.io/pear-shipping-widget/';
 const events={mother:'母の日',father:'父の日',aged:'敬老の日',valentine:'バレンタイン',white:'ホワイトデー',pear:'梨・柿',crab:'カニ'};
-const routes={calendar:{label:'運営カレンダー',family:'calendar',url:new URL('calendar.html?v=5',location.href).href}};
+const routes={calendar:{label:'運営カレンダー',family:'calendar',url:new URL('calendar.html?v=7',location.href).href}};
 for(const [id,label] of Object.entries(events)){const seasonal=!['pear','crab'].includes(id);routes[id]={label:label+(seasonal?' / 予測・カード':''),event:id,panel:seasonal?'forecast':null,family:'event',url:base+'mothers-day/v84.html?event='+id+(seasonal?'&tab=forecast':'')};if(seasonal)routes[id+'-cloud']={label:label+' / 伝票発行',event:id,panel:'cloud',family:'event',url:base+'mothers-day/v84.html?event='+id+'&tab=cloud'}}
 routes['koguchisu-sanin']={label:'個口数 / 山陰',family:'parcel',url:base+'koguchisu/index.html?region='+encodeURIComponent('山陰')};routes['koguchisu-okinawa']={label:'個口数 / 沖縄',family:'parcel',url:base+'koguchisu/index.html?region='+encodeURIComponent('沖縄')};
 const small=matchMedia('(max-width:900px)');let current='home',frame=null,sequence=0,slowTimer=null,cleanup=[];
 function setMenu(open,focus=false){$('app').classList.toggle('menuOpen',open);$('menuButton').setAttribute('aria-expanded',String(open));$('backdrop').hidden=!open||!small.matches;if(!open&&$('sidebar').contains(document.activeElement))$('menuButton').focus();if(focus&&open&&small.matches)$('navigation').querySelector('[aria-current="page"]')?.focus()}
 setMenu(!small.matches);small.addEventListener('change',()=>setMenu(!small.matches));$('menuButton').onclick=()=>setMenu(!$('app').classList.contains('menuOpen'),true);$('backdrop').onclick=()=>{setMenu(false);$('menuButton').focus()};document.addEventListener('keydown',e=>{if(e.key==='Escape'&&small.matches){setMenu(false);$('menuButton').focus()}});
-function mark(id){current=id;document.querySelectorAll('[data-route]').forEach(a=>{if(a.dataset.route===id||routes[id]?.event===a.dataset.route){a.setAttribute('aria-current','page');let group=a.closest('details');while(group){group.open=true;group=group.parentElement.closest('details')}}else a.removeAttribute('aria-current')});const r=routes[id];$('currentLabel').textContent=r?r.label:'ホーム';document.title=(r?r.label+' | ':'')+'ティアラムポータル';$('openOriginal').classList.toggle('hidden',!r);if(r){$('openOriginal').href=r.url;$('noticeOriginal').href=r.url}}
-function release(){clearTimeout(slowTimer);cleanup.forEach(fn=>fn());cleanup=[];if(frame){frame.remove();frame=null}}
+function closeSupport(){if($('portalSupportDialog').open)$('portalSupportDialog').close();$('portalSupportBody').replaceChildren()}
+$('homeSupport').onclick=()=>{const f=document.createElement('iframe');f.title='既存のサポートメニュー';f.src=new URL('../support/index.html?v=9',location.href).href;$('portalSupportBody').replaceChildren(f);$('portalSupportDialog').showModal()};
+$('portalSupportClose').onclick=closeSupport;
+$('portalSupportDialog').addEventListener('close',()=>{$('portalSupportBody').replaceChildren();if(current==='home')$('homeSupport').focus()});
+function mark(id){current=id;$('homeSupportDock').hidden=id!=='home';$('app').classList.toggle('homeView',id==='home');document.querySelectorAll('[data-route]').forEach(a=>{if(a.dataset.route===id||routes[id]?.event===a.dataset.route){a.setAttribute('aria-current','page');let group=a.closest('details');while(group){group.open=true;group=group.parentElement.closest('details')}}else a.removeAttribute('aria-current')});const r=routes[id];$('currentLabel').textContent=r?r.label:'ホーム';document.title=(r?r.label+' | ':'')+'ティアラムポータル';$('openOriginal').classList.toggle('hidden',!r);if(r){$('openOriginal').href=r.url;$('noticeOriginal').href=r.url}}
+function release(){closeSupport();clearTimeout(slowTimer);cleanup.forEach(fn=>fn());cleanup=[];if(frame){frame.remove();frame=null}}
 function syncInside(id){if(!routes[id])return;mark(id);history.replaceState(null,'','#'+id)}
 function connectExistingNavigation(loadedFrame){try{const w=loadedFrame.contentWindow,d=loadedFrame.contentDocument,r=routes[current];if(r?.family==='event'){
 const seen=new WeakSet();
