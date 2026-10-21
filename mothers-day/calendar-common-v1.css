@@ -1,0 +1,14 @@
+/* Shared calendar presentation: visual consistency only; no layout or data behavior changes. */
+:root{--calendar-ui-line:#e3e5e7;--calendar-ui-muted:#667085;--calendar-ui-surface:#fff;--calendar-ui-soft:#f7f8fa;--calendar-ui-radius:10px}
+button,input,select,textarea{font-family:inherit}
+button,input,select,textarea{border-radius:8px}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid #3478b8;outline-offset:2px}
+.toolbar,.top{gap:10px}
+.calendar-wrap{border-radius:10px}
+.weekdays{background:var(--calendar-ui-soft)}
+.day{min-height:112px}
+.day.outside{background:#f4f5f6}
+.event,.entry{border-radius:7px;line-height:1.4}
+.side-form,.editor,.dateModal .inner{border-radius:10px}
+.status{line-height:1.5}
+@media(max-width:800px){.day{min-height:96px}.toolbar,.top{gap:8px}}
