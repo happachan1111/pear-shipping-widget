@@ -1,0 +1,23 @@
+/* Shared visual rules for the pear and crab order/shipping calendars.
+   Keep calendar interactions, business fields, partner/event colors and data handling tool-specific. */
+:root{--calendar-ui-line:#e3e5e7;--calendar-ui-muted:#667085;--calendar-ui-soft:#f7f8fa}
+*{box-sizing:border-box}
+button,input,select,textarea{font-family:inherit}
+button,input,select,textarea{border-radius:8px}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid #3478b8;outline-offset:2px}
+.wrap{padding:14px}
+.top{gap:12px}
+.title{font-size:22px;line-height:1.4}
+.status,.hint{font-size:13px;line-height:1.5}
+.main{gap:12px}
+.board,.editor,.listBox{border-radius:12px;padding:14px}
+.calHead{gap:6px;font-size:13px;margin-bottom:7px}
+.calendar{gap:6px}
+.day{min-height:112px;border-radius:10px;padding:7px}
+.num{font-size:13px;margin-bottom:5px}
+.entry{font-size:12px;line-height:1.4;border-radius:7px;padding:5px;margin-top:4px}
+.typeBadge{font-size:10px}
+.list{gap:8px}
+.pill{border-radius:8px;padding:8px}
+select,input,textarea{min-height:40px}
+@media(max-width:900px){.wrap{padding:10px}.top{gap:8px}.main{gap:10px}.day{min-height:96px;padding:5px}.entry{font-size:11px;padding:4px}.num{font-size:12px}}

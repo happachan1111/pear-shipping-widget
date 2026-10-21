@@ -32,6 +32,9 @@
 .supportLauncher{position:fixed;right:24px;bottom:20px;z-index:22;display:flex;gap:8px;align-items:center;justify-content:center;min-height:48px;padding:10px 16px;border:1px solid #235f83;border-radius:24px;background:#306e94;color:#fff;font:700 16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;box-shadow:0 4px 12px #0002}
 .supportLauncher:hover{background:#245a7a}
 .supportIcon{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:1.5px solid currentColor;border-radius:50%;font-size:16px;line-height:1;flex-shrink:0}
+.supportLauncher{position:relative}
+.supportBadge{position:absolute;top:-7px;right:-7px;z-index:2;display:inline-flex;align-items:center;justify-content:center;min-width:21px;height:21px;padding:0 5px;border:2px solid var(--canvas);border-radius:999px;background:#d92d35;color:#fff;font:700 11px/1 -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;box-shadow:0 1px 3px #0003}
+.supportBadge.hidden{display:none!important}
 .portalSupportDialog{padding:0;width:min(1200px,calc(100% - 24px));height:calc(100dvh - 24px);max-height:calc(100dvh - 24px);border:1px solid var(--line);border-radius:12px;background:var(--canvas);color:var(--ink)}
 .portalSupportDialog[open]{display:flex;flex-direction:column}
 .portalSupportDialog::backdrop{background:#0006}
@@ -48,8 +51,19 @@
 :root{--supportDock:80px}
 .app.homeView .main{bottom:var(--supportDock)}
 .supportDock{position:fixed;left:var(--side);right:0;bottom:0;height:var(--supportDock);padding:12px 24px;display:flex;align-items:center;justify-content:flex-end;background:var(--canvas);border-top:1px solid var(--line);z-index:22}
-.supportDock .supportLauncher{position:static}
+.supportDock .supportLauncher{position:relative}
 .app:not(.menuOpen) .supportDock{left:0}
 .homeInner{padding-bottom:32px}
 @media(max-width:900px){.supportDock,.app.menuOpen .supportDock{left:0}}
 @media(max-width:600px){:root{--supportDock:calc(80px + env(safe-area-inset-bottom))}.supportDock{padding:12px 16px calc(12px + env(safe-area-inset-bottom))}.homeInner{padding-bottom:24px}.eventLaunchLinks a{white-space:nowrap}.eventLaunchLinks a span{display:none}}
+
+
+/* Unified loading state: keep tool content hidden until the iframe has loaded. */
+.toolHost.is-loading .toolFrame{visibility:hidden}
+.loading{flex-direction:column;gap:16px;padding:32px;background:var(--canvas);color:var(--ink)}
+.loadingSpinner{display:block;width:34px;height:34px;border:3px solid var(--line);border-top-color:var(--accent);border-radius:50%;animation:portal-loading-spin .8s linear infinite}
+.loadingMessage{display:flex;flex-direction:column;align-items:center;gap:6px;max-width:480px}
+.loadingMessage strong{font-size:17px;font-weight:700;line-height:1.5}
+.loadingMessage span{font-size:14px;color:var(--muted);line-height:1.6}
+@keyframes portal-loading-spin{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.loadingSpinner{animation:none;border-top-color:var(--accent);border-right-color:var(--accent)}}
