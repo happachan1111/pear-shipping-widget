@@ -1,14 +1,15 @@
-/* Shared calendar presentation: visual consistency only; no layout or data behavior changes. */
-:root{--calendar-ui-line:#e3e5e7;--calendar-ui-muted:#667085;--calendar-ui-surface:#fff;--calendar-ui-soft:#f7f8fa;--calendar-ui-radius:10px}
+/* Shared presentation for the pear timeline and crab auction calendar.
+   Only typography, spacing, borders and control affordances are shared; event colors and workflows stay distinct. */
+:root{--calendar-ui-line:#e3e5e7;--calendar-ui-muted:#667085;--calendar-ui-surface:#fff;--calendar-ui-soft:#f7f8fa}
+*{box-sizing:border-box}
 button,input,select,textarea{font-family:inherit}
 button,input,select,textarea{border-radius:8px}
 button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid #3478b8;outline-offset:2px}
-.toolbar,.top{gap:10px}
-.calendar-wrap{border-radius:10px}
-.weekdays{background:var(--calendar-ui-soft)}
-.day{min-height:112px}
-.day.outside{background:#f4f5f6}
-.event,.entry{border-radius:7px;line-height:1.4}
-.side-form,.editor,.dateModal .inner{border-radius:10px}
-.status{line-height:1.5}
-@media(max-width:800px){.day{min-height:96px}.toolbar,.top{gap:8px}}
+.wrap,.app{max-width:1180px;padding:14px}
+.top,.header{gap:12px}
+.title{font-size:22px;font-weight:900;line-height:1.4}
+.sub,.subtitle,.hint,.status{font-size:13px;line-height:1.5}
+.board,.editor,.listBox,.card,.side-form{border-radius:12px}
+.toolbar,.yearBar,.monthBar,.controls{border-radius:10px}
+.track,.bar,.day,.entry,.event,.pill{border-radius:8px}
+@media(max-width:800px){.wrap,.app{padding:10px}.top,.header{gap:8px}.title{font-size:20px}}
