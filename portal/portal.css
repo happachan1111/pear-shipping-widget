@@ -32,6 +32,9 @@
 .supportLauncher{position:fixed;right:24px;bottom:20px;z-index:22;display:flex;gap:8px;align-items:center;justify-content:center;min-height:48px;padding:10px 16px;border:1px solid #235f83;border-radius:24px;background:#306e94;color:#fff;font:700 16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;box-shadow:0 4px 12px #0002}
 .supportLauncher:hover{background:#245a7a}
 .supportIcon{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:1.5px solid currentColor;border-radius:50%;font-size:16px;line-height:1;flex-shrink:0}
+.supportLauncher{position:relative}
+.supportBadge{position:absolute;top:-7px;right:-7px;z-index:2;display:inline-flex;align-items:center;justify-content:center;min-width:21px;height:21px;padding:0 5px;border:2px solid var(--canvas);border-radius:999px;background:#d92d35;color:#fff;font:700 11px/1 -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;box-shadow:0 1px 3px #0003}
+.supportBadge.hidden{display:none!important}
 .portalSupportDialog{padding:0;width:min(1200px,calc(100% - 24px));height:calc(100dvh - 24px);max-height:calc(100dvh - 24px);border:1px solid var(--line);border-radius:12px;background:var(--canvas);color:var(--ink)}
 .portalSupportDialog[open]{display:flex;flex-direction:column}
 .portalSupportDialog::backdrop{background:#0006}
