@@ -10,5 +10,5 @@
   "orientation": "any",
   "background_color": "#ffffff",
   "theme_color": "#216db8",
-  "icons": [{"src":"/pear-shipping-widget/pwa/icon-portal-v2.svg","sizes":"any","type":"image/svg+xml","purpose":"any"},{"src":"/pear-shipping-widget/pwa/icon-portal-v2.svg","sizes":"any","type":"image/svg+xml","purpose":"maskable"}]
+  "icons": [{"src":"/pear-shipping-widget/pwa/icon-portal-v3.svg","sizes":"any","type":"image/svg+xml","purpose":"any"},{"src":"/pear-shipping-widget/pwa/icon-portal-v3.svg","sizes":"any","type":"image/svg+xml","purpose":"maskable"}]
 }
