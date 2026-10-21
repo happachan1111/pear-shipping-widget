@@ -53,3 +53,14 @@
 .homeInner{padding-bottom:32px}
 @media(max-width:900px){.supportDock,.app.menuOpen .supportDock{left:0}}
 @media(max-width:600px){:root{--supportDock:calc(80px + env(safe-area-inset-bottom))}.supportDock{padding:12px 16px calc(12px + env(safe-area-inset-bottom))}.homeInner{padding-bottom:24px}.eventLaunchLinks a{white-space:nowrap}.eventLaunchLinks a span{display:none}}
+
+
+/* Unified loading state: keep tool content hidden until the iframe has loaded. */
+.toolHost.is-loading .toolFrame{visibility:hidden}
+.loading{flex-direction:column;gap:16px;padding:32px;background:var(--canvas);color:var(--ink)}
+.loadingSpinner{display:block;width:34px;height:34px;border:3px solid var(--line);border-top-color:var(--accent);border-radius:50%;animation:portal-loading-spin .8s linear infinite}
+.loadingMessage{display:flex;flex-direction:column;align-items:center;gap:6px;max-width:480px}
+.loadingMessage strong{font-size:17px;font-weight:700;line-height:1.5}
+.loadingMessage span{font-size:14px;color:var(--muted);line-height:1.6}
+@keyframes portal-loading-spin{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.loadingSpinner{animation:none;border-top-color:var(--accent);border-right-color:var(--accent)}}
