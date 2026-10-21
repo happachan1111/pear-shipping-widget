@@ -3,3 +3,19 @@
 .guidesView{height:100%;padding:0}.guidesView.active{display:flex}.guidesView iframe{width:100%;height:100%;border:0}
 
 main{height:100%}.guidesView{height:100%!important;min-height:0!important;padding:0!important;overflow:hidden!important}.guidesView.active{display:flex!important}.guidesView>iframe{display:block!important;width:100%!important;height:100%!important;min-width:0!important;min-height:0!important;border:0!important}
+
+/* Support menu clarity: grouped navigation with plain-language descriptions. */
+.shell{grid-template-columns:260px minmax(0,1fr)}
+.menu{padding:22px 14px;gap:8px;align-content:start}
+.menuTitle{margin:0 8px 2px;font-size:19px;font-weight:800;color:var(--ink)}
+.menuHelp{margin:0 8px 14px;font-size:12px;line-height:1.6;color:var(--muted)}
+.menu button{min-height:66px;display:flex;justify-content:flex-start;gap:11px;padding:12px;border:1px solid transparent;border-radius:10px;font:inherit;font-weight:400}
+.menu button.active{background:#eef5f8;border-color:#c7dbe5;box-shadow:inset 3px 0 #376f93}
+.menuIcon{display:flex;align-items:center;justify-content:center;width:30px;height:30px;flex:0 0 30px;border:1px solid #d5e0e5;border-radius:8px;background:#fff;color:#376f93;font-size:17px;font-weight:800}
+.menuText{display:grid;gap:3px;min-width:0}
+.menuText strong{font-size:13px;line-height:1.4;color:var(--ink)}
+.menuText small{font-size:11px;line-height:1.45;color:var(--muted);font-weight:400}
+.view header h1{font-size:23px;line-height:1.4}
+.view header p{font-size:13px;line-height:1.6}
+@media(max-width:850px){.shell{grid-template-columns:1fr;grid-template-rows:auto 1fr}.menu{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;padding:10px}.menuTitle,.menuHelp{grid-column:1/-1}.menuTitle{font-size:16px}.menuHelp{margin-bottom:4px}.menu button{min-height:64px;padding:8px;gap:6px;align-items:flex-start}.menuIcon{display:none}.menuText strong{font-size:12px}.menuText small{font-size:10px}.menu button.active{box-shadow:inset 0 -3px #376f93}}
+@media(max-width:560px){.menu{grid-template-columns:1fr;padding:10px}.menu button{min-height:48px;align-items:center}.menuText{gap:1px}.menuText strong{font-size:13px}.menuText small{font-size:11px}.view header{align-items:flex-start;flex-wrap:wrap}.view header h1{font-size:20px}.layout{grid-template-columns:1fr}}
