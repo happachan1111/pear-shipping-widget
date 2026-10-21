@@ -51,7 +51,7 @@
 :root{--supportDock:80px}
 .app.homeView .main{bottom:var(--supportDock)}
 .supportDock{position:fixed;left:var(--side);right:0;bottom:0;height:var(--supportDock);padding:12px 24px;display:flex;align-items:center;justify-content:flex-end;background:var(--canvas);border-top:1px solid var(--line);z-index:22}
-.supportDock .supportLauncher{position:static}
+.supportDock .supportLauncher{position:relative}
 .app:not(.menuOpen) .supportDock{left:0}
 .homeInner{padding-bottom:32px}
 @media(max-width:900px){.supportDock,.app.menuOpen .supportDock{left:0}}
