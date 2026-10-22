@@ -1,6 +1,6 @@
 'use strict';
 (()=>{
-const $=id=>document.getElementById(id),base='https://happachan1111.github.io/pear-shipping-widget/',supportApi='https://flat-disk-51b0.sasaki-8ef.workers.dev',supportSeenKey='tearlum-support-feedback-seen-v1';
+const $=id=>document.getElementById(id),base=new URL('../',location.href).href,supportApi='https://flat-disk-51b0.sasaki-8ef.workers.dev',supportSeenKey='tearlum-support-feedback-seen-v1';
 const events={mother:'母の日',father:'父の日',aged:'敬老の日',valentine:'バレンタイン',white:'ホワイトデー',pear:'梨・柿',crab:'カニ'};
 const routes={calendar:{label:'運営カレンダー',family:'calendar',url:new URL('calendar.html?v=12',location.href).href}};
 for(const [region,rlabel] of Object.entries({sanin:'山陰',okinawa:'沖縄'}))for(const [id,label] of Object.entries({gw:'ゴールデンウィーク',obon:'お盆',yearend:'年末年始'})){const route=region==='sanin'?'holiday-'+id:'holiday-okinawa-'+id;routes[route]={label:'長期休暇の出荷予定 / '+rlabel+' / '+label,family:'holiday',region,url:new URL('holiday-shipping.html?v=9&kind='+id+'&region='+region,location.href).href}};
