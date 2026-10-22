@@ -31,3 +31,5 @@ html,body{height:100%;overflow:hidden}
 .dateFields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 12px;min-width:0}.dateFields label{min-width:0}.dateFields input{min-width:0;max-width:100%}.dateHint{grid-column:1/-1;color:var(--muted);font-size:14px;font-weight:400;line-height:1.5}
 @media(max-width:600px){.dateFields{gap:8px}.dateFields input{padding:8px;font-size:16px}}
 @media(prefers-color-scheme:dark){.categoryBadge.tally{color:#d7bdf5;background:#30243f;border-color:#70558b}}
+
+.day[data-date]{cursor:pointer;transition:background-color .12s ease}.day[data-date]:hover{background:var(--blueSoft)}.day[data-date]:focus-visible{outline:2px solid var(--blue);outline-offset:-2px;position:relative;z-index:1}.dayHint{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:6px;color:var(--muted);font-size:18px;opacity:.55}.day[data-date]:hover .dayHint{opacity:1;background:var(--bg)}.dayHeader{pointer-events:none}.entries{pointer-events:none}.entry{pointer-events:auto}
