@@ -2,7 +2,7 @@
 (()=>{
 const $=id=>document.getElementById(id),base=new URL('../',location.href).href,supportApi='https://flat-disk-51b0.sasaki-8ef.workers.dev',supportSeenKey='tearlum-support-feedback-seen-v1';
 const events={mother:'母の日',father:'父の日',aged:'敬老の日',valentine:'バレンタイン',white:'ホワイトデー',pear:'梨・柿',crab:'カニ'};
-const routes={calendar:{label:'運営カレンダー',family:'calendar',url:new URL('calendar.html?v=12',location.href).href}};
+const routes={calendar:{label:'運営カレンダー',family:'calendar',url:new URL('calendar.html?v=13',location.href).href}};
 for(const [region,rlabel] of Object.entries({sanin:'山陰',okinawa:'沖縄'}))for(const [id,label] of Object.entries({gw:'ゴールデンウィーク',obon:'お盆',yearend:'年末年始'})){const route=region==='sanin'?'holiday-'+id:'holiday-okinawa-'+id;routes[route]={label:'長期休暇の出荷予定 / '+rlabel+' / '+label,family:'holiday',region,url:new URL('holiday-shipping.html?v=9&kind='+id+'&region='+region,location.href).href}};
 for(const [id,label] of Object.entries(events)){const seasonal=!['pear','crab'].includes(id);routes[id]={label:label+(seasonal?' / 予測・カード':''),event:id,panel:seasonal?'forecast':null,family:'event',url:base+'mothers-day/v84.html?build=loading5&event='+id+(seasonal?'&tab=forecast':'')};if(seasonal)routes[id+'-cloud']={label:label+' / 伝票発行',event:id,panel:'cloud',family:'event',url:base+'mothers-day/v84.html?build=loading5&event='+id+'&tab=cloud'}}
 routes['koguchisu-sanin']={label:'個口数 / 山陰',family:'parcel',url:base+'koguchisu/index.html?region='+encodeURIComponent('山陰')};routes['koguchisu-okinawa']={label:'個口数 / 沖縄',family:'parcel',url:base+'koguchisu/index.html?region='+encodeURIComponent('沖縄')};
