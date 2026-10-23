@@ -1,6 +1,6 @@
-const CACHE='tearlum-portal-pwa-v6';
+const CACHE='tearlum-portal-pwa-v7';
 const HOME='/pear-shipping-widget/portal/index.html';
-const SHELL=[HOME,'/pear-shipping-widget/shared/ui.js?v=23','/pear-shipping-widget/shared/ui.css?v=22','/pear-shipping-widget/portal/portal.css?v=9','/pear-shipping-widget/portal/portal.js?v=ui23','/pear-shipping-widget/pwa/manifest.webmanifest','/pear-shipping-widget/pwa/icon-portal-v3.svg'];
+const SHELL=[HOME,'/pear-shipping-widget/shared/ui.js?v=23','/pear-shipping-widget/shared/ui.css?v=22','/pear-shipping-widget/portal/portal.css?v=9','/pear-shipping-widget/portal/portal.js?v=ui24','/pear-shipping-widget/pwa/manifest.webmanifest','/pear-shipping-widget/pwa/icon-portal-v3.svg'];
 self.addEventListener('install',event=>{self.skipWaiting();event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(SHELL)))});
 self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE&&(/^(seasonal-events-pwa-|tearlum-portal-pwa-)/).test(k)).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
 self.addEventListener('message',event=>{if(event.data?.type==='SKIP_WAITING')self.skipWaiting()});
