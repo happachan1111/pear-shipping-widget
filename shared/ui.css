@@ -13,5 +13,7 @@ html.ui-common #archiveFloating86{display:none!important}html.ui-common .preview
 
 .ui-load-actions[hidden]{display:none!important}
 /* Reserve the shared launcher's space beside fixed Save / Update actions. */
-html.ui-common .supportDock{padding-right:128px}html.ui-common .supportDock .saveDock{flex:0 1 auto}
-@media(max-width:650px){html.ui-common .supportDock{padding-right:112px}html.ui-common .supportDock .saveDock{flex:1}html.ui-common .supportDock .saveInfo small{max-width:100px}}
+html.ui-common .supportDock{padding-right:196px}html.ui-common .supportDock .saveDock{flex:0 1 auto}
+@media(max-width:650px){html.ui-common .supportDock{padding-right:160px}html.ui-common .supportDock .saveDock{flex:1}html.ui-common .supportDock .saveInfo small{max-width:100px}}
+
+@media(max-width:340px){html.ui-common .supportDock .saveInfo{position:absolute;left:12px;top:7px}html.ui-common .supportDock .saveInfo small{display:none}html.ui-common .supportDock .saveDock{align-self:flex-end;margin-bottom:4px}}
