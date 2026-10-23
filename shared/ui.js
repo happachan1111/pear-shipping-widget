@@ -1,7 +1,7 @@
 'use strict';
 (()=>{
  const previous=window.AppUI;if(previous?.root?.isConnected)return;previous?.destroy?.();
- const script=document.currentScript,manual=script?.dataset.mode==='manual',supportOff=script?.dataset.support==='off',TIMEOUT=25000,base=new URL('../',script.src),native=window.__tearlumNativeFetch||(window.__tearlumNativeFetch=window.fetch.bind(window));
+ const script=document.currentScript,manual=script?.dataset.mode==='manual',supportOff=script?.dataset.support==='off',TIMEOUT=45000,base=new URL('../',script.src),native=window.__tearlumNativeFetch||(window.__tearlumNativeFetch=window.fetch.bind(window));
  let state='loading',timer,settle,domReady=false,dataSeen=false,pending=0,dead=false;const listeners=[],controllers=new Set();
  const listen=(target,name,fn,options)=>{target.addEventListener(name,fn,options);listeners.push(()=>target.removeEventListener(name,fn,options))};
  const root=document.createElement('div');root.id='commonLoading';root.dataset.commonUi='';root.setAttribute('role','status');root.setAttribute('aria-live','polite');root.innerHTML='<div class="ui-load-card"><span class="ui-spinner" aria-hidden="true"></span><div><p class="ui-load-title">読み込み中…</p><p class="ui-load-detail">最新の情報を取得しています。しばらくお待ちください。</p><div class="ui-load-actions" hidden><button type="button">再読み込み</button><a>ポータルのホームへ</a></div></div></div>';document.documentElement.append(root);document.documentElement.classList.add('ui-common','ui-pending');root.querySelector('a').href=new URL('portal/index.html#home',base).href;
@@ -11,8 +11,39 @@
  function ready(){if(dead||state==='failed')return;clearTimeout(timer);clearTimeout(settle);state='ready';root.hidden=true;document.documentElement.classList.remove('ui-pending','ui-failed');message('tool-ui-ready');message('portal-tool-ready')}
  function auto(){if(!manual&&domReady&&dataSeen&&pending===0&&state==='loading'){clearTimeout(settle);settle=setTimeout(ready,250)}}
  const isData=u=>/(?:\/orders\/data|\/timeline\/data|\/data|\/api\/products|\/api\/vendors)$/.test(u.pathname);
- window.fetch=async function(input,options={}){const req=input instanceof Request?input:null,url=new URL(req?.url||String(input),location.href),method=String(options.method||req?.method||'GET').toUpperCase();if(method!=='GET')return native(input,options);const controller=new AbortController(),signal=options.signal||req?.signal;let timedOut=false;const abort=()=>controller.abort(signal?.reason);if(signal?.aborted)abort();else signal?.addEventListener('abort',abort,{once:true});controllers.add(controller);const timeout=setTimeout(()=>{timedOut=true;controller.abort()},20000),tracked=isData(url);if(tracked)pending++;let finished=false;function done(ok){if(finished)return;finished=true;clearTimeout(timeout);signal?.removeEventListener('abort',abort);controllers.delete(controller);if(tracked){pending--;if(ok)dataSeen=true;else if(state==='loading')fail(timedOut?'接続が時間切れになりました。再読み込みしてお試しください。':undefined);auto()}}
- try{const response=await native(input,{...options,signal:controller.signal});if(!response.ok){done(false);return response}const json=response.json.bind(response),text=response.text.bind(response);response.json=async()=>{try{const data=await json();done(true);return data}catch(e){done(false);throw e}};response.text=async()=>{try{const data=await text();done(true);return data}catch(e){done(false);throw e}};if(!tracked)done(true);return response}catch(e){done(false);throw e}};
+ // Retry read-only data requests once. Never repeat a save, delete or other write.
+ window.fetch=async function(input,options={}){
+  const req=input instanceof Request?input:null,url=new URL(req?.url||String(input),location.href),method=String(options.method||req?.method||'GET').toUpperCase();
+  if(method!=='GET')return native(input,options);
+  const tracked=isData(url),signal=options.signal||req?.signal,maxAttempts=tracked?2:1,retryStatus=new Set([408,429,500,502,503,504]);
+  if(tracked)pending++;
+  let finished=false,lastTimedOut=false;
+  function done(ok,detail){if(finished)return;finished=true;if(tracked){pending--;if(ok)dataSeen=true;else if(state==='loading'&&!signal?.aborted)fail(detail||(lastTimedOut?'接続が時間切れになりました。再読み込みしてお試しください。':'共有データの取得に失敗しました。再接続を試しましたが完了できませんでした。「再読み込み」でやり直してください。'));auto()}}
+  async function attempt(){
+   for(let n=0;n<maxAttempts;n++){
+    const controller=new AbortController(),abort=()=>controller.abort(signal?.reason);let timeout,response,raw,shouldRetry=false;
+    if(signal?.aborted)abort();else signal?.addEventListener('abort',abort,{once:true});controllers.add(controller);lastTimedOut=false;
+    timeout=setTimeout(()=>{lastTimedOut=true;controller.abort()},15000);
+    try{
+     response=await native(input,{...options,signal:controller.signal});
+     if(tracked&&response.ok){raw=await response.clone().text();JSON.parse(raw)}
+     shouldRetry=tracked&&retryStatus.has(response.status)&&n+1<maxAttempts&&!signal?.aborted&&!dead;
+     if(!shouldRetry){
+      if(!response.ok){done(false,[401,403].includes(response.status)?'共有データへのアクセスが拒否されました（HTTP '+response.status+'）。管理者に接続設定をご確認ください。':undefined);return response}
+      const json=response.json.bind(response),text=response.text.bind(response);
+      response.json=async()=>{try{const data=raw===undefined?await json():JSON.parse(raw);done(true);return data}catch(e){done(false);throw e}};
+      response.text=async()=>{try{const data=raw===undefined?await text():raw;done(true);return data}catch(e){done(false);throw e}};
+      if(!tracked)done(true);return response;
+     }
+    }catch(e){
+     shouldRetry=tracked&&n+1<maxAttempts&&!signal?.aborted&&!dead;
+     if(!shouldRetry){done(false);throw e}
+    }finally{clearTimeout(timeout);signal?.removeEventListener('abort',abort);controllers.delete(controller)}
+    if(shouldRetry){try{await response?.body?.cancel()}catch{}await new Promise(resolve=>setTimeout(resolve,600))}
+   }
+  }
+  return attempt();
+ };
  root.querySelector('button').onclick=()=>{let unsaved=false;try{unsaved=!!window.portalHasUnsavedChanges?.()||!!document.querySelector('dialog[open]:not(#commonSupportDialog)')}catch{}if(!unsaved||confirm('編集中の内容が失われる可能性があります。再読み込みしますか？'))location.reload()};
  listen(window,'error',e=>{if(state==='loading'&&(e.error||e.target?.tagName==='SCRIPT'))fail('画面の読み込みを完了できませんでした。再読み込みしてお試しください。')},true);
  window.AppUI={root,begin,ready,fail,get state(){return state},supportOwned:false,destroy(){dead=true;clearTimeout(timer);clearTimeout(settle);listeners.forEach(f=>f());for(const c of controllers)c.abort();root.remove()}};begin();
