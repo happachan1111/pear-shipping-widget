@@ -1,4 +1,4 @@
-# カレンダーの日付操作と空欄取引先行（ui26）
+# カレンダーの日付操作と空欄取引先行（ui27）
 
 ## 日付クリックの実装
 
@@ -7,10 +7,10 @@
 
 | 画面 | ポータルからの実際の接続先 | 処理 |
 | --- | --- | --- |
-| 梨・柿 受注締切 | `mothers-day/pear-deadline-tabs-v50.html` → `pear-deadline-calendar-v47.html` | 日付を入力しフォームへ移動 |
-| 梨・柿 販売終了見込み | `mothers-day/pear-sales-tabs-v50.html` → `pear-sales-calendar-v47.html` | 日付を入力しフォームへ移動 |
+| 梨・柿 受注締切 | `mothers-day/pear-deadline-tabs-v50.html` → `pear-deadline-calendar-v47.html` | 日付を入力し中央ダイアログを開く |
+| 梨・柿 販売終了見込み | `mothers-day/pear-sales-tabs-v50.html` → `pear-sales-calendar-v47.html` | 日付を入力し中央ダイアログを開く |
 | 梨・柿 発注・出荷件数 | `orders/index.html`（互換入口 `index-v56.html` も同じ本体へ接続）→ `legacy/orders-base.html` | 既存の日付ダイアログ |
-| カニ せり情報 | `crab-auction/index.html` | 日付を入力しフォームへ移動。月外の日付も対応 |
+| カニ せり情報 | `crab-auction/index.html` | 日付を入力し中央ダイアログを開く。月外の日付も対応 |
 | カニ 受注・発注締切 | `crab-deadline/index.html` → `legacy/deadline-base.html` | `openAdd(day)`。選択中の受注／発注を引き継ぐ |
 | カニ 発注・出荷件数 | `crab-orders/index.html` → `legacy/orders-base.html` | 共通の日付ダイアログ |
 | 梨・柿 出荷時期（月表示の互換画面） | `mothers-day/pear-calendar-v46.html` | 開始日・終了日を指定日にしフォームへ移動 |
@@ -41,3 +41,11 @@
 - ポータルの入れ子画面から各カレンダーへ接続。
 - 山陰／沖縄 × GW／お盆／年末年始 × PC／スマートフォンの12通りで、空欄3行（空文字・空白・null）と入力済みセル・色・結合セルを用意。
 - 別の表示行を編集 → 明示的に保存 → 再読み込みし、編集したセル以外の保存データ全体が一致することと、空欄行が引き続き非表示であることを比較。
+
+## ui27 中央ダイアログ
+
+- `mothers-day/pear-calendar-dialog.js` が受注締切・販売終了見込みの元の `#form` を中央の `#pearCalendarDialog` に移動。フォームの送信・削除・コメント処理は再実装せず維持する。
+- 空白日は `shared/calendar.js` → `openCalendarForm()`、既存予定は元の `edit()` → 同じダイアログを開く。
+- 保存・削除の成功時だけ閉じて確認を表示。入力不備や通信失敗時は入力内容を残したまま開いておく。閉じる／Escape／編集をやめるでも閉じる。
+- 発注・出荷件数（梨・柿／カニ）の `.main > .editor` は非表示。日付ダイアログ内へ移動した同じ編集欄は表示する。保存処理や保存データは変えない。
+- 1440px／390px／320pxで中央配置・追加・既存編集・明示保存・失敗時の入力保持・コメント・閉じた後のサイドバー非表示を模擬APIで検証。

@@ -1,5 +1,7 @@
 'use strict';
 (()=>{if(window.__tearlumCalendarActions)return;window.__tearlumCalendarActions=true;const start=()=>{
+ // Keep order editors available inside dialogs, but never as a permanent sidebar.
+ if(document.querySelector('#recordType')){document.body.classList.add('ui-calendar-only');const style=document.createElement('style');style.textContent='body.ui-calendar-only .main{grid-template-columns:minmax(0,1fr)!important}body.ui-calendar-only .main>.editor{display:none!important}';document.head.append(style)}
  // Calendar actions only open forms. They never create, update or delete records.
  function dateDialog(ds,record){
   if(typeof window.openDateDialog==='function'){window.openDateDialog(ds);if(record&&typeof window.edit==='function')window.edit(record);return}
@@ -15,6 +17,7 @@
   const date=document.getElementById('date'),start=document.getElementById('start'),end=document.getElementById('end');
   if(!date&&!(start&&end))return false;
   window.clearForm();if(date)date.value=ds;if(start&&end){start.value=ds;end.value=ds}
+  if(typeof window.openCalendarForm==='function'){window.openCalendarForm();return true}
   (date||start).focus({preventScroll:true});form.scrollIntoView({block:'center',behavior:'auto'});return true;
  }
  document.addEventListener('click',e=>{const day=e.target.closest('.day[data-date]');if(!day||!document.querySelector('#calendar'))return;if(e.target.closest('.commentBtn,.commentBadge,.entryCommentBadge,.summaryDayBtn,.memoBadge,.badge,[data-cid]'))return;

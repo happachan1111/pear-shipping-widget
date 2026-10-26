@@ -1,0 +1,19 @@
+#printShipping{flex-shrink:0;align-self:flex-start}
+#shippingPrintDialog{width:min(520px,calc(100% - 24px));max-height:90dvh;overflow:auto;border:1px solid #ddd;border-radius:14px;padding:20px}#shippingPrintDialog::backdrop{background:#0006}#shippingPrintDialog header{display:flex;justify-content:space-between;align-items:center;gap:12px}#shippingPrintDialog p{font-size:13px;color:#58616c}.shippingPrintOptions{display:grid;gap:10px;margin:16px 0}
+#shippingPrintRoot{position:fixed;left:-10000px;top:0;width:281mm;visibility:hidden;pointer-events:none;font-family:Arial,'Noto Sans JP',sans-serif}
+#shippingPrintRoot .shippingPrintPage{position:relative;width:281mm;height:193mm;overflow:hidden;box-sizing:border-box}
+#shippingPrintRoot .shippingPrintContent{width:281mm;font-size:9px;line-height:1.2}
+#shippingPrintRoot header{margin:0 0 6px}#shippingPrintRoot h1{font-size:16px;line-height:1.3;margin:0 0 3px}#shippingPrintRoot p{font-size:9px;margin:3px 0}
+#shippingPrintRoot table{border-collapse:collapse;table-layout:fixed;width:100%;font-size:11px;line-height:1.25}
+#shippingPrintRoot th,#shippingPrintRoot td{border:1px solid #a5a9ae;padding:3px 1px;text-align:center;vertical-align:middle;white-space:pre-wrap;overflow-wrap:anywhere;font-weight:normal}
+#shippingPrintRoot .printVendor{width:120px}#shippingPrintRoot .printFootnote{font-size:8px;margin-top:4px}
+@page{size:A4 landscape;margin:8mm}
+@media print{
+ html.ui-common body,html.ui-common,html,body{margin:0!important;padding:0!important;overflow:visible!important;width:auto!important;height:auto!important;background:#fff!important}
+ body>*:not(#shippingPrintRoot){display:none!important}
+ #shippingPrintRoot{position:static!important;visibility:visible!important;display:block!important;pointer-events:auto;width:281mm!important;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+ #shippingPrintRoot *{print-color-adjust:exact;-webkit-print-color-adjust:exact}
+ #shippingPrintRoot .shippingPrintPage{break-inside:avoid;break-after:page}#shippingPrintRoot .shippingPrintPage:last-child{break-after:auto}
+}
+
+#shippingPrintRoot th{font-size:8px}#shippingPrintRoot th:first-child{font-size:10px}
