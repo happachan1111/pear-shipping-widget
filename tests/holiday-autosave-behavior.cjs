@@ -1,0 +1,24 @@
+const {OUT,chromium,scene,ok,ready,toggle,saved,state,edit,settings,current}=require('./holiday-autosave-fixture.cjs');
+(async()=>{const b=await chromium.launch({executablePath:process.env.CHROMIUM_PATH||undefined,args:['--no-sandbox']});
+for(const width of [1440,390,320]){
+ const s=await scene(b,{width,empty:true}),{p,errors}=await s.person(),t=s.control,r=s.r;
+ await p.waitForTimeout(1100);ok(t.writes.length===0,'Unsaved seed only viewed, never imported automatically');
+ // Rapid committed changes coalesce. Save button flushes before the timer and cancels it.
+ await p.evaluate(r=>{const st=shippingColors.getTable();st.plan.sheets[0].cells[r][1].v='一回目';shippingColors.commit();st.plan.sheets[0].cells[r][2].v='二回目';shippingColors.commit();st.plan.sheets[0].cells[r][3].v='三回目';shippingColors.commit()},r);
+ ok(await state(p)==='dirty','Rapid edits remain queued');await saved(p);ok(t.writes.length===1&&t.writes[0].method==='POST','Rapid changes coalesce into one initial POST');ok(JSON.parse(t.rows.find(x=>x.id===s.id).memo).plan.sheets[0].cells[r][3].v==='三回目','Last rapid value stored');
+ await toggle(p,r).click();await p.locator('#saveBottom').click();await saved(p);const n=t.writes.length;await p.waitForTimeout(1200);ok(t.writes.length===n,'Manual flush cancels duplicate auto-save');await toggle(p,r).click();await saved(p);
+ // Keep a modal draft while a committed change awaits save. Never silently submit the draft.
+ await toggle(p,r+2).click();await p.evaluate(r=>shippingColors.openCell(r,1),r);await p.locator('#value').fill('未反映の入力');const before=t.writes.length;await p.waitForTimeout(1400);ok(t.writes.length===before,'Open editor postpones committed auto-save');ok((await current(p)).sheets[0].cells[r][1].v==='一回目','Draft text never applied implicitly');await p.locator('#cellDialog [data-close]').first().click();await saved(p);ok(t.writes.length===before+1,'Closing editor resumes pending save');ok(JSON.parse(t.rows.find(x=>x.id===s.id).memo).plan.sheets[0].cells[r][1].v==='一回目','Cancelled draft never saved');
+ // Applying a real form value is automatically persisted; slow writes disable conflicting actions.
+ t.delay=700;await edit(p,r,0,'自動保存の取引先');await p.waitForFunction(()=>document.querySelector('#saveIndicator').dataset.state==='saving');ok(await p.locator('#year').isDisabled()&&await p.locator('#reload').isDisabled(),'Slow save blocks switches and reload');ok(await toggle(p,r).isDisabled(),'Slow save locks confirmation editing');await saved(p);t.delay=0;ok(!await p.locator('#year').isDisabled(),'Controls restored after verification');
+ // Supplier addition, new year and period changes are committed form actions.
+ await settings(p);await p.locator('#add').click();await p.locator('#supplierName').fill('新規取引先');await p.locator('#supplierForm .primary').click();await saved(p);ok(JSON.parse(t.rows.find(x=>x.id===s.id).memo).plan.sheets[0].cells.some(row=>row[0]?.v==='新規取引先'),'Added supplier auto-saved');
+ await settings(p);await p.locator('#newYear').click();await p.locator('#newYearValue').fill('2027');await p.locator('#yearForm .primary').click();await saved(p);ok(t.rows.some(x=>x.id==='holiday-shipping|2027|yearend'),'New year auto-saved under separate ID');ok(!(await current(p)).sheets[0].cells.some(row=>row[0]?.supplierConfirmed),'New year confirmations reset');
+ await settings(p);const old=(await current(p)).end;await p.locator('#period').click();await p.locator('#end').fill('2028-01-10');await p.locator('#periodForm .primary').click();await saved(p);ok((await current(p)).end!==old,'Period form changes auto-saved');
+ // Cancelling a pending switch keeps data; explicit discard cancels old timer.
+ await toggle(p,r).click();s.control.accept=false;await p.locator('#year').selectOption('2026');ok((await current(p)).year===2027,'Cancel discard keeps current year');s.control.accept=true;await p.locator('#year').selectOption('2026');await ready(p);const writesBefore=t.writes.length;await p.waitForTimeout(1200);ok(t.writes.length===writesBefore,'Discarded timer never writes wrong year');
+ // Printing is read-only. No new Save is triggered by creating print snapshots.
+ const pn=t.writes.length;await p.evaluate(()=>shippingPrintPreview.prepare(['sanin','okinawa']));ok(await p.locator('.shippingPrintPage').count()===2,'Both regions still print separately');ok(t.writes.length===pn,'Printing makes no save request');await p.evaluate(()=>document.getElementById('shippingPrintRoot')?.remove());
+ ok(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'No horizontal document overflow');ok(errors.length===0,'No runtime errors');await p.evaluate(()=>scrollTo(0,0));await p.screenshot({path:OUT+'/behavior-'+width+'.png'});await s.close();
+}
+await b.close();console.log('AUTO-SAVE BEHAVIOR TESTS PASSED')})().catch(e=>{console.error(e);process.exit(1)});
