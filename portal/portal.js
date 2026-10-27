@@ -11,7 +11,7 @@ const previewMode=['1','true'].includes(new URLSearchParams(location.search).get
 if(previewMode){for(const r of Object.values(routes)){const u=new URL(r.url);u.searchParams.set('preview','1');u.searchParams.set('readonly','1');r.url=u.href}}
 const small=matchMedia('(max-width:900px)');let current='home',frame=null,sequence=0,slowTimer=null,cleanup=[];
 function setMenu(open,focus=false){$('app').classList.toggle('menuOpen',open);$('menuButton').setAttribute('aria-expanded',String(open));$('backdrop').hidden=!open||!small.matches;if(!open&&$('sidebar').contains(document.activeElement))$('menuButton').focus();if(focus&&open&&small.matches)$('navigation').querySelector('[aria-current="page"]')?.focus()}
-setMenu(!small.matches);small.addEventListener('change',()=>setMenu(!small.matches));$('menuButton').onclick=()=>setMenu(!$('app').classList.contains('menuOpen'),true);$('backdrop').onclick=()=>{setMenu(false);$('menuButton').focus()};document.addEventListener('keydown',e=>{if(e.key==='Escape'&&small.matches){setMenu(false);$('menuButton').focus()}});
+setMenu(!small.matches);small.addEventListener('change',()=>setMenu(!small.matches));$('menuButton').onclick=()=>setMenu(!$('app').classList.contains('menuOpen'),true);$('backdrop').onclick=()=>{setMenu(false);$('menuButton').focus()};document.addEventListener('keydown',e=>{if(e.key==='Escape'&&small.matches&&!document.querySelector('dialog[open]')){setMenu(false);$('menuButton').focus()}});
 function closeSupport(){if($('portalSupportDialog').open)$('portalSupportDialog').close();$('portalSupportBody').replaceChildren()}
 let supportLatestAt=0,supportBadgeBusy=false;
 function seenSupportAt(){try{return Math.max(0,Number(localStorage.getItem(supportSeenKey))||0)}catch{return 0}}
