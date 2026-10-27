@@ -1,4 +1,4 @@
-const CACHE='tearlum-portal-pwa-v12';
+const CACHE='tearlum-portal-pwa-v13';
 const HOME='/pear-shipping-widget/portal/index.html';
 const SHELL=[HOME,'/pear-shipping-widget/portal/home-notices.js?v=30','/pear-shipping-widget/portal/home-notices.css?v=30','/pear-shipping-widget/shared/ui.js?v=25','/pear-shipping-widget/shared/ui.css?v=25','/pear-shipping-widget/portal/portal.css?v=9','/pear-shipping-widget/portal/portal.js?v=ui27','/pear-shipping-widget/pwa/manifest.webmanifest','/pear-shipping-widget/pwa/icon-portal-v3.svg'];
 self.addEventListener('install',event=>{self.skipWaiting();event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(SHELL)))});
