@@ -64,3 +64,12 @@ html.ui-common :is(table th,thead th){
 html.ui-common :is(table td,table th){border-color:var(--portal-line)}
 html.ui-common :is(.muted,.help,.description,.subtext){color:var(--portal-muted)}
 @media(prefers-reduced-motion:reduce){html.ui-common *{transition:none!important;animation-duration:.01ms!important}}
+
+/* Clearly label read-only preview pages. */
+html[data-preview-readonly="true"] body::after{
+  content:"プレビュー（閲覧専用）";
+  position:fixed;left:12px;bottom:12px;z-index:2147483002;
+  padding:7px 11px;border:1px solid #b9cbd9;border-radius:8px;
+  background:#fff;color:#285f91;font-size:12px;font-weight:700;
+  box-shadow:0 2px 8px #172b3a18;pointer-events:none;
+}
