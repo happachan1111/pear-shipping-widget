@@ -39,3 +39,10 @@
 @media(max-width:650px){.grid button.supplierConfirm{min-height:32px;padding:3px 8px;font-size:11px}.grid .supplierStatus{padding-bottom:5px}}
 /* Keep status inside its supplier cell, rather than below a full-height name button. */
 .grid td.vendor>.cell{height:auto;min-height:32px}
+
+/* Keep reply status and supplier name on the same horizontal line. */
+.grid .supplierInline{display:flex;align-items:center;gap:4px;padding:3px 4px;min-width:0;text-align:left}
+.grid .supplierInline>.supplierStatus{order:-1;flex:0 0 auto;padding:0}
+.grid .supplierInline>.cell{flex:1;min-width:0;width:auto;height:auto;white-space:normal;text-align:left;padding:4px 0;overflow-wrap:anywhere}
+.grid .supplierInline button.supplierConfirm{padding:3px 6px}
+@media(max-width:650px){.grid .vendorCol{width:140px}.grid .supplierInline{gap:3px;padding:3px}.grid .supplierInline button.supplierConfirm{padding:3px 4px;font-size:10px}}
