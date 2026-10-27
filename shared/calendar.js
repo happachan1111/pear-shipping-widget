@@ -20,7 +20,7 @@
   if(typeof window.openCalendarForm==='function'){window.openCalendarForm();return true}
   (date||start).focus({preventScroll:true});form.scrollIntoView({block:'center',behavior:'auto'});return true;
  }
- document.addEventListener('click',e=>{const day=e.target.closest('.day[data-date]');if(!day||!document.querySelector('#calendar'))return;if(e.target.closest('.commentBtn,.commentBadge,.entryCommentBadge,.summaryDayBtn,.memoBadge,.badge,[data-cid]'))return;
+ document.addEventListener('click',e=>{const day=e.target.closest('.day[data-date]');if(!day||!document.querySelector('#calendar'))return;if(e.target.closest('.commentPreviewButton,.commentBtn,.commentBadge,.entryCommentBadge,.summaryDayBtn,.memoBadge,.badge,[data-cid]'))return;
   if(document.querySelector('#recordType')){
    const entry=e.target.closest('.entry[data-id]');let record=null;if(entry){try{record=(typeof rows!=='undefined'?rows:[]).find(r=>String(r.id)===entry.dataset.id)}catch{}if(!record)return}
    e.preventDefault();e.stopImmediatePropagation();dateDialog(day.dataset.date,record);return;
