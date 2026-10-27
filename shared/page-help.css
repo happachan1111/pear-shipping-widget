@@ -1,0 +1,15 @@
+/* Optional, read-only explanations; all controls and live notices remain visible. */
+html body details.uiHelp{display:block;margin:10px 0 14px;padding:0;border:1px solid var(--line,#e3e5e7);border-radius:9px;background:var(--surface,#f8f9fa);color:var(--ink,#2c2c2b);font-size:14px;line-height:1.65;min-width:0;overflow-wrap:anywhere}
+html body details.uiHelp>summary{display:flex;align-items:center;gap:8px;list-style:none;padding:9px 12px;min-height:40px;font-size:14px;font-weight:600;line-height:1.6;cursor:pointer;color:inherit}
+html body details.uiHelp[open]>summary{border-bottom:1px solid var(--line,#e3e5e7)}
+html body details.uiHelp>summary:focus-visible{outline:2px solid var(--accent,#236db7);outline-offset:2px;border-radius:7px}
+html body details.uiHelp>.uiHelpBody{padding:10px 12px}
+html body details.uiHelp .uiHelpBody>p,html body details.uiHelp .uiHelpBody>.sub,html body details.uiHelp .uiHelpBody>.quantityHelp,html body details.uiHelp .uiHelpBody>.forecast-sheet-note-v93,html body details.uiHelp .uiHelpBody>.card-sheet-note-v99{font-size:14px;line-height:1.65;margin:0 0 8px;color:inherit}
+html body details.uiHelp .uiHelpBody>:last-child{margin-bottom:0}
+html body details.categoryHelp.uiHelp>.categoryLegend,html body details.categoryHelp.uiHelp>.footnote{margin:12px;font-size:14px}
+html body details.guide.uiHelp>ol,html body details.guide.uiHelp>p,html body details.guide.uiHelp>button,html body details.guide.uiHelp>.guideTopics{margin:12px 16px}
+html body .guideTopics>details{border-bottom:1px solid var(--line,#e3e5e7);padding:7px 0}html body .guideTopics>details:last-child{border-bottom:0}html body .guideTopics>details>summary{min-height:36px;cursor:pointer;font-weight:600}html body .guideTopics ol{margin:8px 0;padding-left:24px}html body .guideTopics li+li{margin-top:8px}
+@media(max-width:600px){html body details.uiHelp>summary{min-height:44px;padding:10px 12px}}
+@media print{html body details.uiHelp{display:none!important}}
+
+html body details.uiHelp>summary::before{content:"";display:inline-block;width:0;height:0;border-top:4px solid transparent;border-bottom:4px solid transparent;border-left:6px solid currentColor;flex:none;margin-right:3px}html body details.uiHelp[open]>summary::before{transform:rotate(90deg)}html body details.uiHelp>summary::-webkit-details-marker{display:none}
