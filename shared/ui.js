@@ -2,6 +2,9 @@
 (()=>{
  const previous=window.AppUI;if(previous?.root?.isConnected)return;previous?.destroy?.();
  const script=document.currentScript,manual=script?.dataset.mode==='manual',supportOff=script?.dataset.support==='off',TIMEOUT=45000,base=new URL('../',script.src),native=window.__tearlumNativeFetch||(window.__tearlumNativeFetch=window.fetch.bind(window));
+ const previewMode=(()=>{try{for(let w=window,depth=0;w&&depth<8;w=w.parent,depth++){const q=new URLSearchParams(w.location.search);if(['1','true'].includes(q.get('preview'))||['1','true'].includes(q.get('readonly')))return true;if(w===w.parent)break}}catch{}return false})();
+ const previewWriteError=()=>new Error('プレビューではデータを変更できません。通常画面で操作してください。');
+ if(previewMode){document.documentElement.dataset.previewReadonly='true';const xhrOpen=XMLHttpRequest.prototype.open,xhrSend=XMLHttpRequest.prototype.send,xhrMethods=new WeakMap();XMLHttpRequest.prototype.open=function(method,...args){xhrMethods.set(this,String(method||'GET').toUpperCase());return xhrOpen.call(this,method,...args)};XMLHttpRequest.prototype.send=function(...args){if(!['GET','HEAD','OPTIONS'].includes(xhrMethods.get(this)||'GET'))throw previewWriteError();return xhrSend.apply(this,args)}}
  let state='loading',timer,settle,domReady=false,dataSeen=false,pending=0,dead=false;const listeners=[],controllers=new Set();
  const listen=(target,name,fn,options)=>{target.addEventListener(name,fn,options);listeners.push(()=>target.removeEventListener(name,fn,options))};
  const root=document.createElement('div');root.id='commonLoading';root.dataset.commonUi='';root.setAttribute('role','status');root.setAttribute('aria-live','polite');root.innerHTML='<div class="ui-load-card"><span class="ui-spinner" aria-hidden="true"></span><div><p class="ui-load-title">読み込み中…</p><p class="ui-load-detail">最新の情報を取得しています。しばらくお待ちください。</p><div class="ui-load-actions" hidden><button type="button">再読み込み</button><a>ポータルのホームへ</a></div></div></div>';document.documentElement.append(root);document.documentElement.classList.add('ui-common','ui-pending');root.querySelector('a').href=new URL('portal/index.html#home',base).href;
@@ -14,7 +17,7 @@
  // Retry read-only data requests once. Never repeat a save, delete or other write.
  window.fetch=async function(input,options={}){
   const req=input instanceof Request?input:null,url=new URL(req?.url||String(input),location.href),method=String(options.method||req?.method||'GET').toUpperCase();
-  if(method!=='GET')return native(input,options);
+  if(method!=='GET'){if(previewMode)return Promise.reject(previewWriteError());return native(input,options)}
   const tracked=isData(url),signal=options.signal||req?.signal,maxAttempts=tracked?2:1,retryStatus=new Set([408,429,500,502,503,504]);
   if(tracked)pending++;
   let finished=false,lastTimedOut=false;
