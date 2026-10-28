@@ -27,3 +27,47 @@ const initialRegion=new URLSearchParams(location.search).get('region');if(['山�
 const initialType=new URLSearchParams(location.search).get('type');if([...TYPES.map(([t])=>t),'all'].includes(initialType))choose(initialType);
 if(previewMode){document.body.classList.add('previewOnly');$('add').hidden=true;$('save').disabled=true;$('deleteConfirm').disabled=true;const note=document.createElement('p');note.className='previewNotice';note.textContent='プレビュー：追加・削除・保存はできません。「編集」は別画面で開きます。';$('board').before(note)}
 load();setInterval(()=>{if(!document.hidden&&!$('editor').open&&!$('deleteDialog').open)load(true)},60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!$('editor').open&&!$('deleteDialog').open)load(true)})
+
+'use strict';
+// Autosave product editor only; deletion and preview remain explicit/read-only.
+(()=>{
+ if(previewMode)return;
+ const keys=['region','name','vendor','newVendor','category','max','rule','note'];
+ let dirty=false,blocked=false,timer=0,composing=false;
+ const message=document.createElement('p');message.id='productAutosaveStatus';message.setAttribute('role','status');$('saveError').before(message);
+ const text=t=>{message.textContent=t;$('save').hidden=true};
+ window.portalHasUnsavedChanges=()=>dirty||busy;
+ const oldEdit=edit;edit=function(id){if(dirty||busy)return;oldEdit(id);blocked=false;dirty=false;text('入力後に自動保存します。保存済みを確認して閉じてください。');$('cancel').textContent='閉じる'};
+ function read(){const d=Object.fromEntries(keys.map(k=>[k,$(k).value.trim()]));
+  if(!['山陰','沖縄'].includes(d.region)||!d.name||!d.vendor||!d.category)throw Error('地域・商品名・取引先・区分を入力してください');
+  if(d.vendor==='新しい取引先を入力'&&!d.newVendor)throw Error('新規取引先名を入力してください');
+  if(d.max!==''&&(!Number.isSafeInteger(+d.max)||+d.max<1||!$('max').validity.valid))throw Error('1個口最大数は1以上の整数で入力してください');
+  if(!d.max&&!d.rule)throw Error('1個口最大数または個口ルールを入力してください');
+  if(keys.some(k=>$(k).maxLength>0&&d[k].length>$(k).maxLength))throw Error('入力文字数を確認してください');
+  d.max=d.max===''?null:+d.max;d.mark=editing?.mark||'';if(editing)d.updatedAt=editing.updatedAt;return d;
+ }
+ async function request(path,opt={}){const c=new AbortController(),t=setTimeout(()=>c.abort(),20000);try{const r=await fetch(API_BASE+path,{credentials:'omit',cache:'no-store',redirect:'error',...opt,headers:{'Content-Type':'application/json'},signal:c.signal});const d=await r.json();if(!r.ok)throw Error(d.error||'通信エラー '+r.status);return d}finally{clearTimeout(t)}}
+ async function flush(){clearTimeout(timer);timer=0;if(!dirty||busy||blocked||composing||!$('editor').open)return;
+  let d;try{d=read()}catch(e){text(e.message+'（未保存）');return}
+  ++refreshSeq;setBusy(true);keys.forEach(k=>$(k).disabled=true);text('保存中…');$('saveError').textContent='';let attempted=false;
+  try{
+   // Avoid creating duplicates on an uncertain POST; never automatically resend a write.
+   const before=await request('/products');if(!Array.isArray(before.rows)||before.complete===false)throw Error('共有データをすべて取得できません');
+   if(editing){const latest=before.rows.find(r=>r.id===editing.id);if(!latest||latest.updatedAt!==editing.updatedAt){blocked=true;throw Error('別の場所で更新されています。再読み込みして確認してください')}}
+   attempted=true;const result=await request('/products'+(editing?'/'+encodeURIComponent(editing.id):''),{method:editing?'PUT':'POST',body:JSON.stringify(d)});
+   if(!result.row?.id)throw Error('保存結果を確認できません');
+   const after=await request('/products');if(!Array.isArray(after.rows)||after.complete===false)throw Error('保存結果をすべて確認できません');
+   const saved=after.rows.find(r=>r.id===result.row.id),expected={...d,vendor:d.vendor==='新しい取引先を入力'?d.newVendor:d.vendor};
+   if(!saved||!saved.updatedAt||[...keys,'mark'].some(k=>saved[k]!==expected[k]))throw Error('保存結果が一致しません');
+   editing=saved;rows=after.rows;vendors=after.vendors||vendors;dirty=false;query='';$('q').value='';chooseRegion(d.region);choose(d.category);text('保存済み（共有マスターに反映しました）');status('マスターに自動保存しました。');error('');
+  }catch(e){if(attempted)blocked=true;if(blocked){text('保存を停止しました。入力を控え、再読み込みで共有データを確認してください。');$('saveError').textContent=e.message}else{text('保存失敗。入力は残っています。');$('saveError').textContent=e.message;$('save').hidden=false;$('save').textContent='再試行'}}
+  finally{setBusy(false);keys.forEach(k=>$(k).disabled=blocked);if(!$('save').hidden)$('save').textContent='再試行'}
+ }
+ function queue(){if(blocked||busy)return;dirty=true;clearTimeout(timer);text('保存待ち');if(!composing)timer=setTimeout(flush,1000)}
+ const editor=$('editor');editor.addEventListener('input',e=>{if(keys.includes(e.target.id))queue()});editor.addEventListener('change',e=>{if(keys.includes(e.target.id))queue()});
+ editor.addEventListener('compositionstart',()=>{composing=true;clearTimeout(timer)});editor.addEventListener('compositionend',()=>{composing=false;queue()});
+ $('save').onclick=flush;
+ function close(e){if(busy){e?.preventDefault();return}if(dirty&&!confirm('未保存の入力があります。未保存分を破棄して閉じますか？ 自動保存済みの変更は元に戻りません。')){e?.preventDefault();return}clearTimeout(timer);dirty=false;editor.close()}
+ $('cancel').onclick=close;editor.addEventListener('cancel',e=>{e.preventDefault();close(e)});
+ addEventListener('beforeunload',e=>{if(dirty||busy){e.preventDefault();e.returnValue=''}});
+})();
