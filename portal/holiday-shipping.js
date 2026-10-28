@@ -19,13 +19,12 @@ function editState(){
  for(const b of document.querySelectorAll('#grid button,#sheetTabs button'))b.disabled=b.classList.contains('noteButton')?busy||switching:blocked||(b.matches('.cell[data-r][data-c]')&&cellConfirmed(+b.dataset.r,+b.dataset.c));
  $('draft').hidden=!dirty;
  $('draft').textContent=saveUncertain?'保存結果を確認できません。入力は残っています。バックアップ後に「更新」で確認してください。':saveConflict?'他の人の変更があるため保存を停止しました。バックアップしてから「更新」してください。':saveFailed?'自動保存に失敗しました。入力は残っています。「再試行」を押してください。':'変更を自動保存します。「保存済み」になるまで移動しないでください。';
- $('saveBottom').disabled=blocked||!dirty;
+ $('retrySave').disabled=blocked||!dirty||!saveFailed;
+ $('retrySave').hidden=!saveFailed||blocked;
  const state=saveUncertain?'uncertain':saveConflict?'conflict':busy&&dirty?'saving':busy||switching?'loading':saveFailed?'failed':!connected?'offline':dirty?'dirty':saveConfirmed?'saved':'clean';
  $('saveIndicator').textContent=({uncertain:'保存確認が必要',conflict:'競合あり',saving:'保存中…',loading:'読み込み中…',failed:'保存失敗',offline:'接続を確認',dirty:'保存待ち',saved:'保存済み',clean:'自動保存オン'})[state];
  $('saveIndicator').dataset.state=state;
  $('saveHint').textContent=saveUncertain?'再送せず保存結果を確認':saveConflict?'バックアップ後に更新':saveFailed?'入力を保持しています':dirty?'保存完了までお待ちください':saveConfirmed?'社内への共有が完了しました':'変更は自動保存されます';
- $('saveBottom').textContent=state==='saving'?'保存中…':saveFailed?'再試行':'保存';
- $('saveBottom').title='変更は自動保存されます。待たずに保存する場合は押してください。';
  window.portalHasUnsavedChanges=()=>dirty||busy||!!document.querySelector('dialog[open]:not(#supportDialog)');
  document.dispatchEvent(new Event('shipping-state-changed'));
 }
@@ -121,7 +120,7 @@ async function savePlan(){
   else message(e.message,true);
  }finally{busy=false;editState()}
 }
-$('saveBottom').onclick=()=>savePlan();
+$('retrySave').onclick=()=>{if(saveFailed&&!saveUncertain&&!saveConflict)savePlan()};
 for(const id of ['cellDialog','supplierDialog','periodDialog','yearDialog'])$(id).addEventListener('close',()=>{if(dirty)queueAutoSave()});
 $('reload').onclick=()=>load();$('backup').onclick=()=>{const blob=new Blob([JSON.stringify(plan,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=plan.year+'年_'+REGION[plan.region]+'_'+plan.label+'_長期休暇の出荷予定.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)};
 for(const b of document.querySelectorAll('[data-close]'))b.onclick=()=>$(b.dataset.close).close();$('support').onclick=()=>{const f=document.createElement('iframe');f.title='サポートメニュー';f.src='../support/index.html?v=18';$('supportBody').replaceChildren(f);$('supportDialog').showModal()};$('supportDialog').onclose=()=>$('supportBody').replaceChildren();window.addEventListener('beforeunload',e=>{if(dirty||busy||editorOpen()){e.preventDefault();e.returnValue=''}});load(true);

@@ -12,8 +12,8 @@ a dialog and printing never initiate a write.
   fields are not auto-submitted. Existing validation and destructive confirmations remain.
 - Save is serialized with the existing busy lock, including readback. No plan switch
   or editing during that interval; normal controls are restored in finally.
-- Footer shows pending/saving/saved/failed/conflict/uncertain. Existing Save flushes
-  pending changes; Retry is only enabled for safe pre-write read failures.
+- Footer shows pending/saving/saved/failed/conflict/uncertain. The normal Save button is removed in ui41.
+  Retry is shown only for safe pre-write read failures when retry is actionable.
 - Leaving/reloading before completion warns; there is no unload beacon or blind retry.
 
 ## Data safety
@@ -34,7 +34,7 @@ a dialog and printing never initiate a write.
 
 ## Validation
 Use only fully intercepted browser tests with an in-memory shared store. Cover
-multiple independent users/regions/years, debounce/manual flush, modal draft
+multiple independent users/regions/years, debounce/retry-only controls, modal draft
 protection, slow writes, preflight failures, uncertain writes/readback, conflicts,
 blank-row preservation, confirmation locks, region switching and print output.
 Production APIs must not be used for test writes.
