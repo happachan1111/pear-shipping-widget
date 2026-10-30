@@ -1,0 +1,13 @@
+const fs=require('fs'),vm=require('vm'),assert=require('assert');
+const js=fs.readFileSync('portal/home-notices.js','utf8');let frames=0,cancel=0,cb,intervals=0;const classes=new Set();
+const nodes={};const $=id=>nodes[id]??={hidden:false,setAttribute(){},animate(k,o){assert.equal(o.duration,360);frames++},getAnimations:()=>[{cancel(){cancel++}}]};
+const host={classList:{add:c=>classes.add(c),remove:c=>classes.delete(c)},querySelector:$,contains:()=>false,offsetWidth:300};
+const c={$,host,items:[{date:'2026-12-01',endDate:'2026-12-01',event:'通常',category:'出荷NG',title:'出荷NG',partner:'山芳海産'}],index:0,paused:false,reduced:{matches:false},range:()=>'',timer:null,hover:false,dialog:{open:false},isHome:()=>true,document:{activeElement:null},clearInterval(){},setInterval:f=>{cb=f;intervals++;return 1}};
+vm.createContext(c);vm.runInContext(js.slice(js.indexOf('function drawSlide('),js.indexOf('function drawList('))+js.slice(js.indexOf('function restart()'),js.indexOf('async function read(')),c);
+vm.runInContext('drawSlide(true);restart()',c);assert.equal(frames,4);assert.equal(intervals,0);assert(!classes.has('noticeCycling'));
+c.items.push({...c.items[0],title:'次の予定'});vm.runInContext('restart()',c);assert(classes.has('noticeCycling'));cb();assert.equal(c.index,1);assert.equal(frames,8);
+c.hover=true;vm.runInContext('restart()',c);assert(!classes.has('noticeCycling'));
+c.hover=false;c.paused=true;vm.runInContext('restart()',c);assert(!classes.has('noticeCycling'));
+c.paused=false;c.dialog.open=true;vm.runInContext('restart()',c);assert(!classes.has('noticeCycling'));
+c.dialog.open=false;c.reduced.matches=true;const before=frames;vm.runInContext('drawSlide(true);restart()',c);assert.equal(frames,before);assert(!classes.has('noticeCycling'));
+console.log('PASS slide fade, single item no cycle, progress resets, hover/pause/dialog stop, reduced-motion no animation');
