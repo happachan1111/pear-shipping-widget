@@ -8,6 +8,7 @@
   if (!clock || !reminder || !acknowledge) return;
   const key = 'tearlum.hold-reminder.ack-date.v1';
   const formatter = new Intl.DateTimeFormat('ja-JP', { timeZone: 'Asia/Tokyo', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23' });
+  const dateFormatter = new Intl.DateTimeFormat('ja-JP', { timeZone: 'Asia/Tokyo', year: 'numeric', month: 'long', day: 'numeric', weekday: 'short' });
   let memoryAck = '';
   let currentDay = '';
   function readAck() {
@@ -18,7 +19,8 @@
     currentDay = `${parts.year}-${parts.month}-${parts.day}`;
     clock.textContent = `${parts.hour}:${parts.minute}:${parts.second}`;
     clock.dateTime = `${currentDay}T${parts.hour}:${parts.minute}:${parts.second}+09:00`;
-    dateLabel.textContent = `${parts.month}/${parts.day}（日本時間）`;
+    dateLabel.textContent = dateFormatter.format(new Date());
+    dateLabel.title = '日本時間';
     reminder.hidden = !(Number(parts.hour) * 60 + Number(parts.minute) >= 1050 && readAck() !== currentDay);
     document.body.classList.toggle('holdReminderVisible', !reminder.hidden);
   }
