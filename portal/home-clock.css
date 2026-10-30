@@ -1,0 +1,11 @@
+.homeClock { margin-left:auto; display:flex; align-items:center; gap:10px; color:#354d64; background:#fff; border:1px solid #dce4ec; border-radius:12px; padding:8px 14px; box-shadow:0 2px 5px #20364d04; }
+.homeClock time { font-size:25px; font-weight:650; font-variant-numeric:tabular-nums; letter-spacing:.04em; line-height:1.2; }
+.homeClock span { font-size:11px; color:#687b8c; }
+.homeHeading { display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+.holdReminder { position:fixed; z-index:1500; top:66px; left:50%; transform:translateX(-50%); width:min(660px,calc(100% - 24px)); box-sizing:border-box; display:flex; align-items:center; justify-content:space-between; gap:14px; background:#fffbeb; color:#6b4200; border:1px solid #dfb450; border-left:4px solid #ce8b12; border-radius:10px; padding:10px 14px; box-shadow:0 4px 16px #20364d24; }
+.holdReminder[hidden] { display:none !important; }
+.holdReminder strong { display:block; font-size:15px; line-height:1.4; }
+.holdReminder p { margin:2px 0 0; font-size:11px; color:#806132; }
+.holdReminder button { flex-shrink:0; min-height:40px; padding:8px 16px; border:0; border-radius:8px; background:#216db8; color:white; font-weight:700; cursor:pointer; }
+.holdReminder button:focus-visible { outline:3px solid #1a3654; outline-offset:3px; }
+@media(max-width:480px) { .homeClock { gap:7px; padding:7px 10px; } .homeClock time { font-size:21px; } .homeClock span { font-size:10px; } .holdReminder { top:76px; gap:8px; padding:9px 10px; } .holdReminder strong { font-size:14px; } .holdReminder button { padding:8px 12px; } }
