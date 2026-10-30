@@ -1,0 +1,15 @@
+const fs=require('fs'),vm=require('vm'),assert=require('assert');
+const js=fs.readFileSync('portal/calendar.js','utf8'),html=fs.readFileSync('portal/calendar.html','utf8');
+const begin=js.slice(js.indexOf('const E='),js.indexOf('let remote='));
+const vis=js.slice(js.indexOf('function visible()'),js.indexOf('function eventStyle'));
+const badges=js.slice(js.indexOf('const categoryInfo='),js.indexOf('function entry('));
+const body=js.slice(js.indexOf('function makeBody('),js.indexOf('\n',js.indexOf('function makeBody(')));
+const values={event:'normal',category:'発注NG',date:'2026-12-01',endDate:'',title:'テスト予定',partner:'テスト',details:'備考',search:'',eventFilter:'all',categoryFilter:'発注NG'};
+const c={$:id=>({value:values[id]})};
+vm.createContext(c);vm.runInContext(begin+vis+badges+body+`;globalThis.fn={categoryOf,parse,makeBody,categoryBadge}; let month='2026-12';let rows=[];globalThis.choose=(r)=>{rows=r;return visible()};`,c);
+assert.equal((html.match(/<option>発注NG<\/option>/g)||[]).length,2);
+assert.equal(c.fn.categoryOf({category:'発注NG'}),'発注NG');assert.equal(c.fn.categoryOf({category:'出荷NG'}),'出荷NG');
+const saved=c.fn.makeBody({memo:'{"unknown":"keep"}',comments:[]},'test-id');assert.equal(JSON.parse(saved.memo).category,'発注NG');assert.equal(JSON.parse(saved.memo).unknown,'keep');
+const parsed=c.fn.parse(saved);assert.equal(parsed.category,'発注NG');assert.equal(c.choose([parsed,{...parsed,category:'出荷NG'}]).length,1);
+assert.match(c.fn.categoryBadge('発注NG'),/orderNg/);assert.match(c.fn.categoryBadge('出荷NG'),/ ng/);
+console.log('PASS options, save payload, reload parse, filtering, distinct badge, preserve existing fields/categories');
