@@ -19,25 +19,26 @@ function fillVendorOptions(selectedRegion,current='',preserveStored=false){const
 function vendorFields(){$('newVendorField').classList.toggle('hidden',$('vendor').value!=='新しい取引先を入力')}
 function edit(id){if(previewMode){const u=new URL(location.href);u.searchParams.delete('preview');u.searchParams.delete('readonly');u.searchParams.set('edit',id||'');window.open(u.href,'_blank','noopener');return}editing=rows.find(r=>r.id===id)||null;const r=editing||{region,name:'',vendor:'',newVendor:'',category:filter==='all'?'ネコポス':filter,max:'',rule:'',note:'',mark:''};$('editorTitle').textContent=editing?'商品を編集':'商品を追加';for(const k of ['region','name','newVendor','category','max','rule','note'])$(k).value=r[k]??'';fillVendorOptions($('region').value,r.vendor||'',true);$('saveError').textContent='';$('editor').showModal();$('name').focus()}
 function setBusy(value){busy=value;for(const id of ['save','cancel','deleteConfirm','deleteCancel','add','refresh'])$(id).disabled=value||(previewMode&&['save','deleteConfirm','add'].includes(id))||id==='add'&&!loaded;$('save').textContent=value?'保存中…':'マスターに保存'}
-async function save(){if(previewMode||busy)return;const d={};for(const k of ['region','name','vendor','newVendor','category','max','rule','note'])d[k]=$(k).value.trim();if(!['山陰','沖縄'].includes(d.region)||!d.name||!d.vendor||!d.category)return $('saveError').textContent='地域・商品名・取引先・区分は必須です。';if(d.vendor==='新しい取引先を入力'&&!d.newVendor)return $('saveError').textContent='新規取引先名を入力してください。';if(d.max!==''&&(!Number.isSafeInteger(Number(d.max))||Number(d.max)<1))return $('saveError').textContent='1個口最大数は1以上の整数で入力してください。';if(!d.max&&!d.rule)return $('saveError').textContent='1個口最大数または個口ルールを入力してください。';d.max=d.max===''?null:Number(d.max);d.mark=editing?.mark||'';if(editing)d.updatedAt=editing.updatedAt;++refreshSeq;setBusy(true);try{const data=await api('/products'+(editing?'/'+encodeURIComponent(editing.id):''),{method:editing?'PUT':'POST',body:JSON.stringify(d)});rows=editing?rows.map(r=>r.id===editing.id?data.row:r):[...rows,data.row];$('editor').close();query='';$('q').value='';chooseRegion(d.region);choose(d.category);status('マスターに保存しました。');error('')}catch(e){$('saveError').textContent=e.message}finally{setBusy(false)}}
 function askDelete(id){if(previewMode)return;deleting=rows.find(r=>r.id===id);if(!deleting)return;$('deleteName').textContent=vendorOf(deleting)+' / '+deleting.name;$('deleteError').textContent='';$('deleteDialog').showModal();$('deleteCancel').focus()}
 async function remove(){if(previewMode||busy||!deleting)return;++refreshSeq;setBusy(true);try{await api('/products/'+encodeURIComponent(deleting.id),{method:'DELETE',body:JSON.stringify({updatedAt:deleting.updatedAt})});rows=rows.filter(r=>r.id!==deleting.id);$('deleteDialog').close();render();status('マスターから削除しました。Notionのゴミ箱から復元できます。')}catch(e){$('deleteError').textContent=e.message}finally{setBusy(false)}}
-$('board').onclick=e=>{const button=e.target.closest('button');if(button?.dataset.edit)edit(button.dataset.edit);if(button?.dataset.delete)askDelete(button.dataset.delete)};document.querySelectorAll('.regionTab').forEach(b=>b.onclick=()=>chooseRegion(b.dataset.region));document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>choose(b.dataset.filter));$('q').oninput=e=>{query=norm(e.target.value);render()};$('add').onclick=()=>edit();$('refresh').onclick=()=>load();$('vendor').onchange=vendorFields;$('region').onchange=()=>fillVendorOptions($('region').value,$('vendor').value);$('save').onclick=save;$('cancel').onclick=()=>$('editor').close();$('deleteCancel').onclick=()=>$('deleteDialog').close();$('deleteConfirm').onclick=remove;for(const dialog of [$('editor'),$('deleteDialog')])dialog.addEventListener('cancel',e=>{if(busy)e.preventDefault()});
+$('board').onclick=e=>{const button=e.target.closest('button');if(button?.dataset.edit)edit(button.dataset.edit);if(button?.dataset.delete)askDelete(button.dataset.delete)};document.querySelectorAll('.regionTab').forEach(b=>b.onclick=()=>chooseRegion(b.dataset.region));document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>choose(b.dataset.filter));$('q').oninput=e=>{query=norm(e.target.value);render()};$('add').onclick=()=>edit();$('refresh').onclick=()=>load();$('vendor').onchange=vendorFields;$('region').onchange=()=>fillVendorOptions($('region').value,$('vendor').value);$('cancel').onclick=()=>$('editor').close();$('deleteCancel').onclick=()=>$('deleteDialog').close();$('deleteConfirm').onclick=remove;for(const dialog of [$('editor'),$('deleteDialog')])dialog.addEventListener('cancel',e=>{if(busy)e.preventDefault()});
 const initialRegion=new URLSearchParams(location.search).get('region');if(['山陰','沖縄'].includes(initialRegion))chooseRegion(initialRegion);
 const initialType=new URLSearchParams(location.search).get('type');if([...TYPES.map(([t])=>t),'all'].includes(initialType))choose(initialType);
 if(previewMode){document.body.classList.add('previewOnly');$('add').hidden=true;$('save').disabled=true;$('deleteConfirm').disabled=true;const note=document.createElement('p');note.className='previewNotice';note.textContent='プレビュー：追加・削除・保存はできません。「編集」は別画面で開きます。';$('board').before(note)}
 load();setInterval(()=>{if(!document.hidden&&!$('editor').open&&!$('deleteDialog').open)load(true)},60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!$('editor').open&&!$('deleteDialog').open)load(true)})
 
+
 'use strict';
-// Autosave product editor only; deletion and preview remain explicit/read-only.
+// Explicit product save: no writes until the user presses the save button.
 (()=>{
  if(previewMode)return;
  const keys=['region','name','vendor','newVendor','category','max','rule','note'];
- let dirty=false,blocked=false,timer=0,composing=false;
- const message=document.createElement('p');message.id='productAutosaveStatus';message.setAttribute('role','status');$('saveError').before(message);
- const text=t=>{message.textContent=t;$('save').hidden=true};
+ let dirty=false,blocked=false,initial='',composing=false;
+ const message=document.createElement('p');message.id='productSaveStatus';message.setAttribute('role','status');$('saveError').before(message);
+ const values=()=>JSON.stringify(keys.map(k=>$(k).value));
+ const text=t=>{message.textContent=t};
  window.portalHasUnsavedChanges=()=>dirty||busy;
- const oldEdit=edit;edit=function(id){if(dirty||busy)return;oldEdit(id);blocked=false;dirty=false;text('入力後に自動保存します。保存済みを確認して閉じてください。');$('cancel').textContent='閉じる'};
+ const oldEdit=edit;edit=function(id){if(dirty||busy)return;keys.forEach(k=>$(k).disabled=false);oldEdit(id);blocked=false;dirty=false;initial=values();$('save').hidden=false;$('save').disabled=false;$('save').textContent='マスターに保存';$('cancel').textContent='キャンセル';text('入力後、「マスターに保存」を押してください。')};
  function read(){const d=Object.fromEntries(keys.map(k=>[k,$(k).value.trim()]));
   if(!['山陰','沖縄'].includes(d.region)||!d.name||!d.vendor||!d.category)throw Error('地域・商品名・取引先・区分を入力してください');
   if(d.vendor==='新しい取引先を入力'&&!d.newVendor)throw Error('新規取引先名を入力してください');
@@ -46,12 +47,11 @@ load();setInterval(()=>{if(!document.hidden&&!$('editor').open&&!$('deleteDialog
   if(keys.some(k=>$(k).maxLength>0&&d[k].length>$(k).maxLength))throw Error('入力文字数を確認してください');
   d.max=d.max===''?null:+d.max;d.mark=editing?.mark||'';if(editing)d.updatedAt=editing.updatedAt;return d;
  }
- async function request(path,opt={}){const c=new AbortController(),t=setTimeout(()=>c.abort(),20000);try{const r=await fetch(API_BASE+path,{credentials:'omit',cache:'no-store',redirect:'error',...opt,headers:{'Content-Type':'application/json'},signal:c.signal});const d=await r.json();if(!r.ok)throw Error(d.error||'通信エラー '+r.status);return d}finally{clearTimeout(t)}}
- async function flush(){clearTimeout(timer);timer=0;if(!dirty||busy||blocked||composing||!$('editor').open)return;
-  let d;try{d=read()}catch(e){text(e.message+'（未保存）');return}
+ async function request(path,opt={}){const c=new AbortController(),t=setTimeout(()=>c.abort(),20000);try{const r=await fetch(API_BASE+path,{credentials:'omit',cache:'no-store',redirect:'error',...opt,headers:opt.body?{'Content-Type':'application/json'}:{},signal:c.signal});const d=await r.json();if(!r.ok)throw Error(d.error||'通信エラー '+r.status);return d}finally{clearTimeout(t)}}
+ async function commit(){if(busy||blocked||composing||!$('editor').open)return;
+  let d;try{d=read()}catch(e){$('saveError').textContent=e.message;return}
   ++refreshSeq;setBusy(true);keys.forEach(k=>$(k).disabled=true);text('保存中…');$('saveError').textContent='';let attempted=false;
   try{
-   // Avoid creating duplicates on an uncertain POST; never automatically resend a write.
    const before=await request('/products');if(!Array.isArray(before.rows)||before.complete===false)throw Error('共有データをすべて取得できません');
    if(editing){const latest=before.rows.find(r=>r.id===editing.id);if(!latest||latest.updatedAt!==editing.updatedAt){blocked=true;throw Error('別の場所で更新されています。再読み込みして確認してください')}}
    attempted=true;const result=await request('/products'+(editing?'/'+encodeURIComponent(editing.id):''),{method:editing?'PUT':'POST',body:JSON.stringify(d)});
@@ -59,15 +59,15 @@ load();setInterval(()=>{if(!document.hidden&&!$('editor').open&&!$('deleteDialog
    const after=await request('/products');if(!Array.isArray(after.rows)||after.complete===false)throw Error('保存結果をすべて確認できません');
    const saved=after.rows.find(r=>r.id===result.row.id),expected={...d,vendor:d.vendor==='新しい取引先を入力'?d.newVendor:d.vendor};
    if(!saved||!saved.updatedAt||[...keys,'mark'].some(k=>saved[k]!==expected[k]))throw Error('保存結果が一致しません');
-   editing=saved;rows=after.rows;vendors=after.vendors||vendors;dirty=false;query='';$('q').value='';chooseRegion(d.region);choose(d.category);text('保存済み（共有マスターに反映しました）');status('マスターに自動保存しました。');error('');
-  }catch(e){if(attempted)blocked=true;if(blocked){text('保存を停止しました。入力を控え、再読み込みで共有データを確認してください。');$('saveError').textContent=e.message}else{text('保存失敗。入力は残っています。');$('saveError').textContent=e.message;$('save').hidden=false;$('save').textContent='再試行'}}
-  finally{setBusy(false);keys.forEach(k=>$(k).disabled=blocked);if(!$('save').hidden)$('save').textContent='再試行'}
+   editing=saved;rows=after.rows;vendors=after.vendors||vendors;dirty=false;query='';$('q').value='';chooseRegion(d.region);choose(d.category);$('editor').close();status('マスターに保存しました。');error('');
+  }catch(e){if(attempted)blocked=true;if(blocked){text('保存を停止しました。入力を控え、再読み込みで共有データを確認してください。');$('save').disabled=true}else{text('保存できませんでした。入力は残っています。');} $('saveError').textContent=e.message}
+  finally{setBusy(false);keys.forEach(k=>$(k).disabled=blocked);$('save').disabled=blocked;$('save').textContent='マスターに保存'}
  }
- function queue(){if(blocked||busy)return;dirty=true;clearTimeout(timer);text('保存待ち');if(!composing)timer=setTimeout(flush,1000)}
- const editor=$('editor');editor.addEventListener('input',e=>{if(keys.includes(e.target.id))queue()});editor.addEventListener('change',e=>{if(keys.includes(e.target.id))queue()});
- editor.addEventListener('compositionstart',()=>{composing=true;clearTimeout(timer)});editor.addEventListener('compositionend',()=>{composing=false;queue()});
- $('save').onclick=flush;
- function close(e){if(busy){e?.preventDefault();return}if(dirty&&!confirm('未保存の入力があります。未保存分を破棄して閉じますか？ 自動保存済みの変更は元に戻りません。')){e?.preventDefault();return}clearTimeout(timer);dirty=false;editor.close()}
+ const editor=$('editor');function changed(e){if(blocked||busy||!keys.includes(e.target.id))return;dirty=values()!==initial;$('saveError').textContent='';text(dirty?'未保存です。「マスターに保存」を押してください。':'入力後、「マスターに保存」を押してください。')}
+ editor.addEventListener('input',changed);editor.addEventListener('change',changed);
+ editor.addEventListener('compositionstart',()=>{composing=true});editor.addEventListener('compositionend',e=>{composing=false;changed(e)});
+ $('save').onclick=commit;
+ function close(e){if(busy){e?.preventDefault();return}if(dirty&&!confirm('未保存の入力があります。保存せずに閉じますか？')){e?.preventDefault();return}dirty=false;editor.close()}
  $('cancel').onclick=close;editor.addEventListener('cancel',e=>{e.preventDefault();close(e)});
  addEventListener('beforeunload',e=>{if(dirty||busy){e.preventDefault();e.returnValue=''}});
 })();
