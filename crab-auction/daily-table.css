@@ -1,0 +1,18 @@
+/* Do not hide daily prices behind a scrollable calendar cell. */
+.calendar .day{height:auto!important;min-height:110px!important;max-height:none!important;overflow:visible!important;min-width:0}
+.calendar .dailyTable{display:grid;gap:2px;margin-top:3px}
+.calendar .dailyEntry{display:grid;grid-template-columns:minmax(0,auto) minmax(0,1fr) auto;align-items:center;gap:3px;min-height:25px!important;margin:0!important;padding:2px 3px!important;border-left-width:3px;font-size:11px;line-height:1.2}
+.calendar .dailyEntryName{font-weight:800;overflow-wrap:anywhere}
+.calendar .dailyEntry .price{display:block;font-size:11px;overflow-wrap:anywhere;text-align:right}
+.calendar .dailyIcons{display:flex;gap:1px}
+.calendar .dailyEntry .memoBadge,.calendar .dailyEntry .commentBadge{position:static;width:auto;min-width:19px;height:20px;font-size:9px;padding:0 2px}
+.calendar .priorRow{display:flex;gap:3px}.calendar .priorRow span{text-align:right;overflow-wrap:anywhere}
+body:not(.legacyAuctionEdit) .panel .editor{display:none!important}
+#dailyPriceEditor{width:min(690px,calc(100% - 20px));max-height:min(90vh,850px);overflow:auto}
+#dailyPriceEditor .dailyHelp{font-size:13px;color:#666;margin:0 0 12px}
+#dailyFields{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.dailySupplier{display:grid;grid-template-columns:1fr;gap:4px;border:1px solid #e8d8d6;border-radius:9px;padding:10px}
+.dailySupplier h4{margin:0 0 2px;color:#8f3028}.dailySupplier label{font-size:12px;font-weight:bold;color:#666}
+.dailySupplier input,.dailySupplier textarea{width:100%;min-width:0;padding:8px;border:1px solid #ccc;border-radius:7px;font:inherit}
+.dailySupplier textarea{resize:vertical}.dailyWarning,#dailyStatus{font-size:13px;color:#a43129;white-space:pre-wrap}.dailyWarning{margin:0}
+@media(max-width:720px){#dailyFields{grid-template-columns:1fr}.calendar .dailyEntry{grid-template-columns:1fr;gap:1px}.calendar .dailyEntry .price{text-align:left}.calendar .dailyIcons{justify-content:flex-start}.calendar .priorRow{display:block}}
