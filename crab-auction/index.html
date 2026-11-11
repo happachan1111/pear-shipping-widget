@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="./compact-notes.css?v=2">
 <link rel="stylesheet" href="./button-spacing.css?v=2">
 <link rel="stylesheet" href="./notice-updates.css?v=1">
+<link rel="stylesheet" href="./daily-table.css?v=60">
 <script src="/pear-shipping-widget/shared/comment-preview.js?v=38"></script></head>
 <body>
 <div class="app">
@@ -30,6 +31,7 @@
 <button id="nextMonth" class="button" type="button">次月 ›</button>
 </section>
 <div class="comparisonHelp">各日付の下部に、前年の同じ日の価格がある場合は参考表示します。</div>
+<div id="dailyPageStatus" role="status" aria-live="polite"></div>
 <div id="calendar" class="calendar"></div>
 <section class="panel">
 <div class="card editor">
@@ -48,8 +50,9 @@
 <dialog id="commentDialog">
 <div class="dialogInner"><h3 id="commentTitle">コメント</h3><div id="commentList" class="commentList"></div><textarea id="commentText" rows="4" placeholder="確認事項や補足を入力"></textarea><div class="dialogActions"><button id="closeComment" class="button" type="button">閉じる</button><button id="addComment" class="button primary" type="button">コメント追加</button></div></div>
 </dialog>
-<script src="./app.js?v=ui38"></script>
+<script src="./app.js?v=ui60"></script>
 <script src="./compact-notes.js?v=3"></script>
+<script src="./daily-table.js?v=60"></script>
 <script src="./notice-updates.js?v=1"></script>
 <script src="./calendar-confirm-import.js?v=1"></script>
 <script src="/pear-shipping-widget/shared/calendar.js?v=38"></script></body>

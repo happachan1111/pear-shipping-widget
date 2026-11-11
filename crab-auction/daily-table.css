@@ -7,7 +7,11 @@
 .calendar .dailyIcons{display:flex;gap:1px}
 .calendar .dailyEntry .memoBadge,.calendar .dailyEntry .commentBadge{position:static;width:auto;min-width:19px;height:20px;font-size:9px;padding:0 2px}
 .calendar .priorRow{display:flex;gap:3px}.calendar .priorRow span{text-align:right;overflow-wrap:anywhere}
-body:not(.legacyAuctionEdit) .panel .editor{display:none!important}
+.panel .editor{display:none!important}
+.panel{grid-template-columns:minmax(0,1fr)!important}
+#dailyPageStatus:not(:empty){padding:8px;color:#28724d;font-weight:700}
+#legacyPriceEditor .editor{display:grid}
+#legacyPriceEditor .legacyClose{margin:10px 13px 13px}
 #dailyPriceEditor{width:min(690px,calc(100% - 20px));max-height:min(90vh,850px);overflow:auto}
 #dailyPriceEditor .dailyHelp{font-size:13px;color:#666;margin:0 0 12px}
 #dailyFields{display:grid;grid-template-columns:1fr 1fr;gap:10px}
