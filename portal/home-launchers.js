@@ -4,7 +4,7 @@
  if(!dialog)return;
  const groups={
   event:{title:'季節イベント',help:'イベントを選んでください。',links:[['mother','母の日'],['father','父の日'],['aged','敬老の日'],['valentine','バレンタイン'],['white','ホワイトデー'],['pear','梨・柿'],['crab','カニ']]},
-  holiday:{title:'長期休暇の出荷予定',help:'地域を選んでください。開いた画面で予定表・年を切り替えられます。',links:[['holiday-gw','山陰'],['holiday-okinawa-yearend','沖縄']]},
+  holiday:{title:'長期休暇の出荷予定',help:'地域を選んでください。開いた画面で予定表・年を切り替えられます。',links:[['holiday-sanin','山陰'],['holiday-okinawa','沖縄']]},
   parcel:{title:'個口数',help:'地域を選んでください。',links:[['koguchisu-sanin','山陰'],['koguchisu-okinawa','沖縄']]}
  };
  let opener=null,leaving=false;
