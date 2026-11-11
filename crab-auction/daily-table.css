@@ -20,3 +20,5 @@
 .dailySupplier input,.dailySupplier textarea{width:100%;min-width:0;padding:8px;border:1px solid #ccc;border-radius:7px;font:inherit}
 .dailySupplier textarea{resize:vertical}.dailyWarning,#dailyStatus{font-size:13px;color:#a43129;white-space:pre-wrap}.dailyWarning{margin:0}
 @media(max-width:720px){#dailyFields{grid-template-columns:1fr}.calendar .dailyEntry{grid-template-columns:1fr;gap:1px}.calendar .dailyEntry .price{text-align:left}.calendar .dailyIcons{justify-content:flex-start}.calendar .priorRow{display:block}}
+
+.dailyEntryName[data-note]{text-decoration:underline dotted;text-underline-offset:3px}#auctionNotePreview{position:fixed;z-index:10000;max-height:40vh;overflow:auto;padding:10px 12px;border:1px solid #ddbeb9;border-radius:9px;background:#fff;color:#3a2927;box-shadow:0 5px 18px #0003;font-size:13px;line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere}#auctionNotePreview[hidden]{display:none}
