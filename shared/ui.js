@@ -18,7 +18,7 @@
  window.fetch=async function(input,options={}){
   const req=input instanceof Request?input:null,url=new URL(req?.url||String(input),location.href),method=String(options.method||req?.method||'GET').toUpperCase();
   if(method!=='GET'){if(previewMode)return Promise.reject(previewWriteError());return native(input,options)}
-  const tracked=isData(url),signal=options.signal||req?.signal,maxAttempts=tracked?2:1,retryStatus=new Set([408,429,500,502,503,504]);
+  const tracked=isData(url),retryable=tracked||(url.origin===location.origin&&/\.html$/i.test(url.pathname)),signal=options.signal||req?.signal,maxAttempts=retryable?2:1,retryStatus=new Set([408,429,500,502,503,504]);
   if(tracked)pending++;
   let finished=false,lastTimedOut=false;
   function done(ok,detail){if(finished)return;finished=true;if(tracked){pending--;if(ok)dataSeen=true;else if(state==='loading'&&!signal?.aborted)fail(detail||(lastTimedOut?'接続が時間切れになりました。再読み込みしてお試しください。':'共有データの取得に失敗しました。再接続を試しましたが完了できませんでした。「再読み込み」でやり直してください。'));auto()}}
@@ -30,7 +30,7 @@
     try{
      response=await native(input,{...options,signal:controller.signal});
      if(tracked&&response.ok){raw=await response.clone().text();JSON.parse(raw)}
-     shouldRetry=tracked&&retryStatus.has(response.status)&&n+1<maxAttempts&&!signal?.aborted&&!dead;
+     shouldRetry=retryable&&retryStatus.has(response.status)&&n+1<maxAttempts&&!signal?.aborted&&!dead;
      if(!shouldRetry){
       if(!response.ok){done(false,[401,403].includes(response.status)?'共有データへのアクセスが拒否されました（HTTP '+response.status+'）。管理者に接続設定をご確認ください。':undefined);return response}
       const json=response.json.bind(response),text=response.text.bind(response);
@@ -39,7 +39,7 @@
       if(!tracked)done(true);return response;
      }
     }catch(e){
-     shouldRetry=tracked&&n+1<maxAttempts&&!signal?.aborted&&!dead;
+     shouldRetry=retryable&&n+1<maxAttempts&&!signal?.aborted&&!dead;
      if(!shouldRetry){done(false);throw e}
     }finally{clearTimeout(timeout);signal?.removeEventListener('abort',abort);controllers.delete(controller)}
     if(shouldRetry){try{await response?.body?.cancel()}catch{}await new Promise(resolve=>setTimeout(resolve,600))}
@@ -48,7 +48,7 @@
   return attempt();
  };
  root.querySelector('button').onclick=()=>{let unsaved=false;try{unsaved=!!window.portalHasUnsavedChanges?.()||!!document.querySelector('dialog[open]:not(#commonSupportDialog)')}catch{}if(!unsaved||confirm('編集中の内容が失われる可能性があります。再読み込みしますか？'))location.reload()};
- listen(window,'error',e=>{if(state==='loading'&&(e.error||e.target?.tagName==='SCRIPT'))fail('画面の読み込みを完了できませんでした。再読み込みしてお試しください。')},true);
+ listen(window,'error',e=>{if(e.target?.tagName==='SCRIPT'&&e.target.dataset.uiManagedRetry==='1')return;if(state==='loading'&&(e.error||e.target?.tagName==='SCRIPT'))fail('画面の読み込みを完了できませんでした。再読み込みしてお試しください。')},true);
  window.AppUI={root,begin,ready,fail,get state(){return state},supportOwned:false,destroy(){dead=true;clearTimeout(timer);clearTimeout(settle);listeners.forEach(f=>f());for(const c of controllers)c.abort();root.remove()}};begin();
  listen(document,'DOMContentLoaded',()=>{domReady=true;if(document.body?.dataset.uiStatic==='true')ready();else auto();setupSupport()},{once:true});
  if(document.readyState!=='loading'){domReady=true;setupSupport();auto()}
