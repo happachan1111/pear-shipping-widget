@@ -2,7 +2,7 @@
 (()=>{
  const host=document.getElementById('homeNotices');if(!host)return;
  const $=id=>document.getElementById(id),API='https://flat-disk-51b0.sasaki-8ef.workers.dev',nativeFetch=window.__tearlumNativeFetch||window.fetch.bind(window);
- const types={operations_schedule:'通常',mothers_day_schedule:'母の日',fathers_day_schedule:'父の日',respect_for_aged_day_schedule:'敬老の日',valentine_white_day_schedule:'バレンタイン',white_day_schedule:'ホワイトデー'},events={normal:'通常',mother:'母の日',father:'父の日',aged:'敬老の日',valentine:'バレンタイン',white:'ホワイトデー'};
+ const types={operations_schedule:'通常',mothers_day_schedule:'母の日',fathers_day_schedule:'父の日',respect_for_aged_day_schedule:'敬老の日',valentine_white_day_schedule:'バレンタイン',white_day_schedule:'ホワイトデー',pear_operations_schedule:'梨・柿',crab_operations_schedule:'カニ'},events={normal:'通常',mother:'母の日',father:'父の日',aged:'敬老の日',valentine:'バレンタイン',white:'ホワイトデー',pear:'梨・柿',crab:'カニ'};
  const reduced=matchMedia('(prefers-reduced-motion: reduce)');let remote=[],seeds=null,items=[],index=0,busy=false,loaded=false,error=false,timer=null,hover=false,paused=reduced.matches;
  const dialog=$('homeNoticeDialog'),list=$('homeNoticeList'),message=$('homeNoticeStatus');
  const today=()=>new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Tokyo'}).format(new Date()),validDate=s=>/^\d{4}-\d{2}-\d{2}$/.test(s||'')&&!isNaN(Date.parse(s+'T00:00:00Z'))&&new Date(s+'T00:00:00Z').toISOString().slice(0,10)===s;
