@@ -86,3 +86,8 @@
 @media(max-width:1100px){.homeTile{padding:20px;gap:12px}.homeTileText strong{font-size:18px}}
 @media(max-width:600px){.homeInner{padding:18px 16px 20px}.homeHeading h1{font-size:20px}.homeLaunchGrid{grid-template-columns:1fr;gap:10px}.homeTile,.homeTile:not(.homeTile-calendar){position:relative;flex-direction:row;align-items:center;justify-content:flex-start;gap:12px;padding:14px;min-height:76px}.homeTile-calendar{min-height:88px}.homeTileIcon{width:36px;height:36px;border-radius:9px}.homeTileIcon svg{width:24px;height:24px}.homeTileText strong{font-size:16px}.homeTileText small{font-size:11px;margin-top:3px}.homeTileArrow,.homeTile:not(.homeTile-calendar) .homeTileArrow{position:static;margin-left:auto;font-size:18px}.homePickerDialog{padding:18px}.homePickerDialog h2{font-size:18px}.homePickerLinks{gap:8px}.homePickerLinks a{font-size:14px}}
 @media(max-height:700px) and (max-width:600px){.homeInner{padding-top:12px}.homeLaunchGrid{gap:8px}.homeTile,.homeTile:not(.homeTile-calendar){min-height:48px;padding:8px 12px}.homeTile-calendar{min-height:56px}.homeTileIcon{width:28px;height:28px}.homeTileIcon svg{width:21px;height:21px}.homeTileText strong{font-size:15px}.homeTileText small{display:none}.homeNotices{margin-top:8px;margin-bottom:12px}}
+
+/* Keep the portal navigation usable while the selected tool loads. */
+html.ui-common.ui-pending body > #app:not([data-common-ui]){visibility:visible!important;pointer-events:auto!important}
+html.ui-common.ui-pending #commonLoading{display:none!important}
+html.ui-common.ui-pending #toolHost.is-loading #loading:not(.hidden){display:flex!important}

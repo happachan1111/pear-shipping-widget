@@ -14,10 +14,32 @@
  function ready(){if(dead||state==='failed')return;clearTimeout(timer);clearTimeout(settle);state='ready';root.hidden=true;document.documentElement.classList.remove('ui-pending','ui-failed');window.dispatchEvent(new Event('tearlum-ui-ready'));message('tool-ui-ready');message('portal-tool-ready')}
  function auto(){if(!manual&&domReady&&dataSeen&&pending===0&&state==='loading'){clearTimeout(settle);settle=setTimeout(ready,250)}}
  const isData=u=>/(?:\/orders\/data|\/timeline\/data|\/data|\/api\/products|\/api\/vendors)$/.test(u.pathname);
+ // Share only concurrent, read-only requests for the same public orders feed.
+ // Never cache completed data: edits and explicit refreshes must see fresh results.
+ const orderOrigin='https://flat-disk-51b0.sasaki-8ef.workers.dev';
+ function orderBroker(){try{const h=window.top;if(h.location.origin!==location.origin)return null;return h.__tearlumOrderBroker||(h.__tearlumOrderBroker={host:h,entry:null,writes:0})}catch{return null}}
+ function sharedOrderFetch(input,options={}){
+  let url;try{if(typeof input!=='string'&&!(input instanceof URL))return native(input,options);url=new URL(String(input),location.href)}catch{return native(input,options)}
+  const allowed=new Set(['method','headers','cache','credentials','signal']);
+  if(url.origin!==orderOrigin||url.pathname!=='/orders/data'||String(options.method||'GET').toUpperCase()!=='GET'||Object.keys(options).some(k=>!allowed.has(k))||!['no-store',undefined].includes(options.cache)||!['omit','same-origin',undefined].includes(options.credentials))return native(input,options);
+  let headers;try{headers=new Headers(options.headers);if([...headers].some(([k,v])=>k.toLowerCase()!=='content-type'||v.toLowerCase()!=='application/json'))return native(input,options)}catch{return native(input,options)}
+  const b=orderBroker(),signal=options.signal;if(!b||b.writes)return native(input,options);
+  if(signal?.aborted)return Promise.reject(new DOMException('Aborted','AbortError'));
+  let entry=b.entry;
+  if(!entry||entry.url!==url.href){
+   const controller=new AbortController(),hostNative=b.host.__tearlumNativeFetch||b.host.fetch.bind(b.host);
+   entry={url:url.href,controller,refs:0,settled:false};b.entry=entry;
+   entry.promise=hostNative(url.href,{...options,signal:controller.signal}).then(async response=>{await response.clone().arrayBuffer();return response}).finally(()=>{entry.settled=true;if(b.entry===entry)b.entry=null});
+  }
+  entry.refs++;let onAbort;
+  const aborted=signal?new Promise((_,reject)=>{onAbort=()=>reject(new DOMException('Aborted','AbortError'));signal.addEventListener('abort',onAbort,{once:true})}):null;
+  return (aborted?Promise.race([entry.promise,aborted]):entry.promise).then(response=>response.clone()).finally(()=>{if(onAbort)signal.removeEventListener('abort',onAbort);entry.refs--;if(!entry.refs&&!entry.settled){if(b.entry===entry)b.entry=null;entry.controller.abort()}});
+ }
+ window.__tearlumSharedOrderFetch=sharedOrderFetch;
  // Retry read-only data requests once. Never repeat a save, delete or other write.
  window.fetch=async function(input,options={}){
   const req=input instanceof Request?input:null,url=new URL(req?.url||String(input),location.href),method=String(options.method||req?.method||'GET').toUpperCase();
-  if(method!=='GET'){if(previewMode)return Promise.reject(previewWriteError());return native(input,options)}
+  if(method!=='GET'){if(previewMode)return Promise.reject(previewWriteError());const b=url.origin===orderOrigin?orderBroker():null;if(b){b.entry=null;b.writes++}try{return await native(input,options)}finally{if(b){b.entry=null;b.writes--}}}
   const tracked=isData(url),retryable=tracked||(url.origin===location.origin&&/\.html$/i.test(url.pathname)),signal=options.signal||req?.signal,maxAttempts=retryable?2:1,retryStatus=new Set([408,429,500,502,503,504]);
   if(tracked)pending++;
   let finished=false,lastTimedOut=false;
@@ -28,7 +50,7 @@
     if(signal?.aborted)abort();else signal?.addEventListener('abort',abort,{once:true});controllers.add(controller);lastTimedOut=false;
     timeout=setTimeout(()=>{lastTimedOut=true;controller.abort()},15000);
     try{
-     response=await native(input,{...options,signal:controller.signal});
+     response=await sharedOrderFetch(input,{...options,signal:controller.signal});
      if(tracked&&response.ok){raw=await response.clone().text();JSON.parse(raw)}
      shouldRetry=retryable&&retryStatus.has(response.status)&&n+1<maxAttempts&&!signal?.aborted&&!dead;
      if(!shouldRetry){
@@ -57,7 +79,7 @@
  const dialog=document.createElement('dialog');dialog.id='commonSupportDialog';dialog.dataset.commonUi='';dialog.innerHTML='<header><h2>サポートメニュー</h2><button type="button">閉じる</button></header>';document.body.append(dialog);
  const seenKey='tearlum-support-feedback-seen-v1';let posts=[],polling=false;const seen=()=>{try{return Number(localStorage.getItem(seenKey))||0}catch{return 0}},created=r=>{let m={};try{m=JSON.parse(r.memo||'{}')}catch{}return Number(m.createdAt)||Number(r.updated_at)||Date.parse(r.updated_at)||0};
  const paint=()=>{const count=posts.filter(p=>created(p)>seen()).length,b=launcher.querySelector('span');b.textContent=count>99?'99+':String(count);b.hidden=count===0;launcher.setAttribute('aria-label','サポートメニュー'+(count?'・未読の連絡'+count+'件':''));launcher.title=count?'未読の連絡が'+count+'件あります':'サポートメニュー'};
- async function poll(){if(polling||dead)return;polling=true;const c=new AbortController(),t=setTimeout(()=>c.abort(),12000);try{const res=await native('https://flat-disk-51b0.sasaki-8ef.workers.dev/orders/data',{cache:'no-store',signal:c.signal});if(!res.ok)return;const data=await res.json();posts=(Array.isArray(data.rows)?data.rows:[]).filter(r=>r.record_type==='tool_feedback');paint()}catch{}finally{clearTimeout(t);polling=false}}
+ async function poll(){if(polling||dead)return;polling=true;const c=new AbortController(),t=setTimeout(()=>c.abort(),12000);try{const res=await sharedOrderFetch('https://flat-disk-51b0.sasaki-8ef.workers.dev/orders/data',{cache:'no-store',signal:c.signal});if(!res.ok)return;const data=await res.json();posts=(Array.isArray(data.rows)?data.rows:[]).filter(r=>r.record_type==='tool_feedback');paint()}catch{}finally{clearTimeout(t);polling=false}}
  launcher.onclick=()=>{const frame=document.createElement('iframe');frame.title='不具合・要望／使い方／バックアップ';frame.src=new URL('support/index.html?v=ui38',base).href;dialog.append(frame);dialog.showModal()};dialog.querySelector('button').onclick=()=>dialog.close();listen(dialog,'close',()=>{dialog.querySelector('iframe')?.remove();launcher.focus()});
  listen(window,'message',e=>{if(e.origin!==location.origin||e.source!==dialog.querySelector('iframe')?.contentWindow||e.data?.type!=='support-feedback-seen')return;try{localStorage.setItem(seenKey,String(Math.max(seen(),Number(e.data.latestCreatedAt)||0)))}catch{}paint()});listen(window,'storage',e=>{if(e.key===seenKey)paint()});listen(document,'visibilitychange',()=>{if(!document.hidden)poll()});listen(window,'focus',()=>{if(!document.hidden)poll()});poll();const interval=setInterval(()=>{if(!document.hidden)poll()},60000);listeners.push(()=>clearInterval(interval));
  }
