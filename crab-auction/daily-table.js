@@ -34,10 +34,11 @@ document.addEventListener('click',e=>{const day=e.target.closest('#calendar .day
 const tip=document.createElement('div');tip.id='auctionNotePreview';tip.setAttribute('role','tooltip');tip.hidden=true;document.body.appendChild(tip);let tipTarget=null;
 function hideTip(){if(tipTarget)tipTarget.removeAttribute('aria-describedby');tipTarget=null;tip.hidden=true}
 function showTip(target){const note=target?.dataset.note;if(!note)return;hideTip();tipTarget=target;tip.textContent=note;tip.hidden=false;target.setAttribute('aria-describedby',tip.id);const r=target.getBoundingClientRect(),pad=8,w=Math.min(320,innerWidth-pad*2);tip.style.width=w+'px';tip.style.left=Math.max(pad,Math.min(innerWidth-w-pad,r.left))+'px';tip.style.top='0px';const h=tip.getBoundingClientRect().height;tip.style.top=(r.bottom+8+h<=innerHeight-pad?r.bottom+8:Math.max(pad,r.top-h-8))+'px'}
-document.addEventListener('pointerover',e=>{if(e.pointerType==='touch')return;const target=e.target.closest?.('.dailyEntryName[data-note]');if(target&&target!==tipTarget)showTip(target)});
-document.addEventListener('pointerout',e=>{const target=e.target.closest?.('.dailyEntryName[data-note]');if(target&&target===tipTarget&&!target.contains(e.relatedTarget)&&!tip.contains(e.relatedTarget))hideTip()});
+document.addEventListener('pointerover',e=>{if(e.pointerType==='touch')return;const target=e.target.closest?.('.dailyEntryName[data-note], .upcomingPartner[data-note]');if(target&&target!==tipTarget)showTip(target)});
+document.addEventListener('pointerout',e=>{const target=e.target.closest?.('.dailyEntryName[data-note], .upcomingPartner[data-note]');if(target&&target===tipTarget&&!target.contains(e.relatedTarget)&&!tip.contains(e.relatedTarget))hideTip()});
 tip.addEventListener('pointerleave',e=>{if(!tipTarget?.contains(e.relatedTarget)&&document.activeElement!==tipTarget)hideTip()});
-document.addEventListener('focusin',e=>{const target=e.target.closest?.('.dailyEntryName[data-note]');if(target)showTip(target)});document.addEventListener('focusout',e=>{if(e.target===tipTarget&&!tip.contains(e.relatedTarget))hideTip()});
+document.addEventListener('focusin',e=>{const target=e.target.closest?.('.dailyEntryName[data-note], .upcomingPartner[data-note]');if(target)showTip(target)});document.addEventListener('focusout',e=>{if(e.target===tipTarget&&!tip.contains(e.relatedTarget))hideTip()});
+document.addEventListener('click',e=>{const target=e.target.closest?.('.upcomingPartner[data-note]');if(target){e.preventDefault();showTip(target)}else if(tipTarget?.matches('.upcomingPartner')&&!tip.contains(e.target))hideTip()});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!tip.hidden)hideTip()});document.addEventListener('scroll',()=>hideTip(),true);addEventListener('resize',hideTip);
 addEventListener('beforeunload',e=>{if(dirty()||busy){e.preventDefault();e.returnValue=''}});
 render();

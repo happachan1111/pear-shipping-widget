@@ -1,0 +1,8 @@
+/* A compact, fully visible daily list, preserving each original record and action. */
+.calendar{gap:0;border:1px solid var(--line);border-radius:11px;overflow:hidden;background:#fff}
+.calHead{gap:0}.calendar .day{height:auto;min-height:110px;max-height:none;overflow:visible;min-width:0;border-radius:0;padding:5px}
+/* Keep partner name, type and count readable in narrow day cells. */
+.calendar .entry{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"name comment" "type count";align-items:center;gap:2px;min-width:0;min-height:25px;margin-top:3px;padding:2px 3px!important;border-left-width:3px;font-size:11px;line-height:1.25;overflow-wrap:anywhere}
+.calendar .entry b{grid-area:name;min-width:0;overflow-wrap:anywhere}.calendar .entry .typeBadge{grid-area:type;justify-self:start;margin:0;padding:1px 3px;font-size:9px;white-space:nowrap}.calendar .entryCount{grid-area:count;justify-self:end;font-size:10px;white-space:nowrap}
+.calendar .entry .entryCommentBadge{grid-area:comment;justify-self:end;position:static!important;min-width:22px;height:20px;padding:0 2px;font-size:9px;box-shadow:none}
+@media(max-width:720px){.calendar .day{min-height:104px;padding:3px}.calendar .entry{grid-template-columns:minmax(0,1fr);grid-template-areas:"name" "type" "count" "comment";gap:2px}.calendar .entry b{white-space:normal}.calendar .entryCount,.calendar .entry .entryCommentBadge{justify-self:start}}
