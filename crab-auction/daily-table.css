@@ -27,4 +27,4 @@
 .auctionWorkspace55 .panel .upcomingCard{max-height:none!important;overflow:visible!important}
 .upcomingPartner{font:inherit;font-weight:800;padding:0;border:0;background:none;color:inherit;text-align:left;text-decoration:underline dotted;text-underline-offset:3px;cursor:pointer}
 .upcomingPartner:focus-visible{outline:2px solid #3478b8;outline-offset:2px;border-radius:2px}
-.uprow>div{min-width:0}.uprow .upPrice{white-space:normal;text-align:right;overflow-wrap:anywhere}
+.uprow>div{min-width:0}.uprow .upPrice{font-size:20px;line-height:1.35;white-space:normal;text-align:right;overflow-wrap:anywhere}
