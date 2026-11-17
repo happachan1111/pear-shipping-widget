@@ -1,0 +1,15 @@
+#totals{display:none!important}
+#pearDailyEditor,#pearIndividualEditor{width:min(720px,calc(100% - 20px));max-height:90dvh;overflow:auto;border:1px solid #e6d6d3;border-radius:14px;padding:0;background:#fff;color:#2c2c2b}
+#pearDailyEditor::backdrop,#pearIndividualEditor::backdrop{background:rgba(0,0,0,.36)}
+.pearDailyInner{padding:18px}.pearDailyInner h2{margin:0 0 8px;font-size:20px}.pearDailyHelp{margin:0 0 12px;color:#666;font-size:13px;line-height:1.5}
+#pearDailyFields{display:grid;grid-template-columns:1fr 1fr;gap:10px}.pearDailySupplier,.pearDailyOther{border:1px solid #e8d8d6;border-radius:9px;padding:10px}.pearDailySupplier h3,.pearDailyOther h3{margin:0 0 8px;color:#39794d;font-size:15px}.pearDailyKinds{display:grid;grid-template-columns:1fr 1fr;gap:8px}.pearDailyKind{min-width:0}.pearDailyKind label{display:block;font-size:12px;font-weight:800;color:#555}.pearDailyKind input,.pearDailyKind textarea{width:100%;min-width:0;padding:8px;border:1px solid #ccc;border-radius:7px;font:inherit}.pearDailyKind input{min-height:42px}.pearDailyKind details{margin-top:5px;font-size:12px}.pearDailyKind summary{cursor:pointer;color:#655d5a}.pearDailyKind textarea{margin-top:5px;resize:vertical}.pearDailyWarning,#pearDailyStatus{color:#a43129;font-size:13px;white-space:pre-wrap}
+.pearDailyIndividual,#pearDailyAddOther,.pearIndividualClose{background:#fff;color:#39794d;border:1px solid #e4aaa3;border-radius:8px;padding:7px 9px;margin-top:6px;font-size:12px}.pearDailyOther{margin-top:10px}.pearDailyOtherRow{display:flex;justify-content:space-between;gap:8px;border-top:1px solid #eee;padding:8px 0;font-size:13px}.pearDailyOtherMemo{white-space:pre-wrap;color:#666;margin-top:4px}.pearDailyActions{display:flex;justify-content:flex-end;gap:8px}.pearDailyActions button{min-height:44px;padding:9px 16px;background:#8f8b85}.pearDailyActions #pearDailySave{background:#39794d}.pearDailyActions button:disabled{opacity:.5}.pearIndividualSlot .editor{display:block!important;margin:12px}.pearIndividualClose{margin:0 12px 12px}
+@media(max-width:600px){.pearDailyInner{padding:13px}#pearDailyFields{grid-template-columns:1fr}.pearDailyOtherRow{flex-direction:column}}
+
+.pearCustomPartner{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:12px 12px 0;font-size:12px}.pearCustomPartner input{width:auto;flex:1;min-width:150px}.pearCustomPartner button{background:#39794d;min-height:40px}
+.pearDailyActions{position:sticky;bottom:-18px;z-index:2;background:#fff;border-top:1px solid #eee;margin-top:10px;padding:9px 0 2px}
+@media(max-width:600px){.pearDailyActions{bottom:-13px}}
+.pearDailyActions{bottom:0;justify-content:flex-start;padding:9px 0}
+@media(max-width:600px){.pearDailyActions{bottom:0}}
+
+.pearDuplicateItem{margin-top:6px;padding:6px;background:#f5f8f4;border-radius:6px;font-size:12px}.pearDuplicateMemo{white-space:pre-wrap;overflow-wrap:anywhere;color:#666;margin-top:4px}
