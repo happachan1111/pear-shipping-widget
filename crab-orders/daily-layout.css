@@ -6,3 +6,28 @@
 .calendar .entry b{grid-area:name;min-width:0;overflow-wrap:anywhere}.calendar .entry .typeBadge{grid-area:type;justify-self:start;margin:0;padding:1px 3px;font-size:9px;white-space:nowrap}.calendar .entryCount{grid-area:count;justify-self:end;font-size:10px;white-space:nowrap}
 .calendar .entry .entryCommentBadge{grid-area:comment;justify-self:end;position:static!important;min-width:22px;height:20px;padding:0 2px;font-size:9px;box-shadow:none}
 @media(max-width:720px){.calendar .day{min-height:104px;padding:3px}.calendar .entry{grid-template-columns:minmax(0,1fr);grid-template-areas:"name" "type" "count" "comment";gap:2px}.calendar .entry b{white-space:normal}.calendar .entryCount,.calendar .entry .entryCommentBadge{justify-self:start}}
+/* Make company, category and count readable without a crowded badge. */
+.crabCompactLegend{display:none}
+#calendar .entry{display:block;position:relative;min-width:0;padding:4px 5px!important;line-height:1.25!important;font-size:12px!important;overflow-wrap:anywhere}
+#calendar .entry b{display:block;min-width:0;font-size:12px;line-height:1.25;margin:0 0 2px;color:#26333d;overflow-wrap:anywhere}
+#calendar .crabTypeShort{display:none}
+#calendar .crabRecordDetails{display:flex;align-items:baseline;gap:3px;line-height:1.2;font-size:11px;color:#704116;font-weight:700}
+#calendar .entry.ship .crabRecordDetails{color:#245a83}
+#calendar .crabRecordCount{font-size:14px;font-weight:800;color:#242f39;line-height:1.2}
+#calendar .crabCountUnit{margin-left:-2px}
+#calendar .entry .entryCommentBadge.zero{display:none!important}
+#calendar .entry .entryCommentBadge:not(.zero){display:flex!important;position:static!important;width:max-content;min-width:0;height:auto;margin:3px 0 0;padding:1px 3px;font-size:10px;line-height:1.1;box-shadow:none}
+@media(max-width:600px){
+ .crabCompactLegend{display:block;margin:5px 0;color:#666;font-size:11px;line-height:1.3}
+ .board{padding:7px!important}
+ #calendar .day{padding:2px!important;min-width:0}
+ #calendar .entry{padding:2px!important;border-left-width:2px!important;margin-top:2px!important;border-radius:4px!important}
+ #calendar .entry b{font-size:10px;line-height:1.2;margin-bottom:1px}
+ #calendar .crabTypeFull,#calendar .crabCountUnit{display:none}
+ #calendar .crabTypeShort{display:inline}
+ #calendar .crabRecordDetails{gap:1px;font-size:10px;line-height:1.15;flex-wrap:wrap}
+ #calendar .crabRecordCount{font-size:11px;line-height:1.15}
+ #calendar .entry .entryCommentBadge:not(.zero){font-size:9px}
+}
+#calendar .entry .entryCommentBadge:not(.zero){float:none!important;width:max-content!important;min-width:0!important;height:18px!important;min-height:18px!important;padding:1px 2px!important;margin:2px 0 0!important;gap:1px!important}
+#calendar .entry .entryCommentBadge svg{width:10px!important;height:10px!important}
