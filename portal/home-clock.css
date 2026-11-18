@@ -11,3 +11,37 @@
 @media(max-width:480px) { .homeClock { gap:7px; padding:7px 10px; white-space:nowrap; } .homeClock time { font-size:21px; } .homeClock span { font-size:12px; } .holdReminder { top:76px; gap:8px; padding:9px 10px; } .holdReminder strong { font-size:14px; } .holdReminder button { padding:8px 12px; } }
 
 @media(max-width:360px) { .homeHeading { gap:6px; } .homeClock { gap:5px; padding:7px 6px; } .homeClock time { font-size:18px; } .homeClock span { font-size:10px; } }
+/* Keep the clock and acknowledgement in the portal header, not over content. */
+.topbar .appTitle{flex:0 1 auto;white-space:nowrap}
+.topbar .homeClock{flex:0 0 auto;margin-left:auto;gap:7px;border:0;background:transparent;padding:0;box-shadow:none;white-space:nowrap}
+.topbar .homeClock time{font-size:19px}
+.topbar .homeClock span{font-size:12px}
+.topbar .holdReminder{position:static;transform:none;width:auto;flex:0 0 auto;gap:8px;padding:4px 8px;box-shadow:none;border-left-width:3px}
+.topbar .holdReminder strong{font-size:13px;white-space:nowrap}
+.topbar .holdReminder p{font-size:10px;white-space:nowrap}
+.topbar .holdReminder button{min-height:34px;padding:6px 10px;font-size:12px}
+.topbar .original{margin-left:0}
+@media(max-width:1100px){
+ body{--header:102px}
+ body.holdReminderVisible{--header:148px}
+ .topbar{display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"menu title original" "clock clock clock";grid-template-rows:48px 38px;gap:0 10px;padding:4px 12px;align-content:center}
+ body.holdReminderVisible .topbar{grid-template-areas:"menu title original" "clock clock clock" "reminder reminder reminder";grid-template-rows:48px 35px 45px}
+ .topbar .menuButton{grid-area:menu}
+ .topbar .appTitle{grid-area:title;min-width:0}
+ .topbar .original{grid-area:original;justify-self:end}
+ .topbar .homeClock{grid-area:clock;justify-self:start;margin:0}
+ .topbar .holdReminder{grid-area:reminder;width:100%;min-width:0;justify-self:stretch}
+}
+@media(max-width:520px){
+ .topbar .appTitle{white-space:normal}
+ .topbar .homeClock time{font-size:18px}
+ .topbar .homeClock span{font-size:12px}
+ .topbar .holdReminder strong{font-size:12px}
+ .topbar .holdReminder p{font-size:10px}
+}
+@media(max-width:360px){
+ body{--header:114px}
+ body.holdReminderVisible{--header:160px}
+ .topbar{grid-template-rows:60px 38px}
+ body.holdReminderVisible .topbar{grid-template-rows:60px 35px 45px}
+}
