@@ -31,3 +31,31 @@
 }
 #calendar .entry .entryCommentBadge:not(.zero){float:none!important;width:max-content!important;min-width:0!important;height:18px!important;min-height:18px!important;padding:1px 2px!important;margin:2px 0 0!important;gap:1px!important}
 #calendar .entry .entryCommentBadge svg{width:10px!important;height:10px!important}
+/* One compact card per supplier: order left, shipment right. */
+#calendar .crabPair{width:min(100%,82px);margin:3px 0 0;padding:2px;border:1px solid #ded7d1;border-radius:5px;background:#fff;color:#26333d;cursor:pointer;min-width:0}
+#calendar .crabPairName{display:block;margin:0 0 2px;font-size:11px;line-height:1.2;overflow-wrap:anywhere}
+#calendar .crabPairColumns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px}
+#calendar .crabPairCell{min-width:0;aspect-ratio:1/1;border:1px solid #ead1b5;border-radius:4px;background:#fff1df;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;padding:1px;text-align:center;line-height:1.1;overflow-wrap:anywhere}
+#calendar .crabPair-ship{background:#eaf4fd;border-color:#c5ddf2}
+#calendar .crabPairLabel{font-size:10px;font-weight:700;color:#804819;white-space:nowrap}
+#calendar .crabPair-ship .crabPairLabel{color:#225e8c}
+#calendar .crabPairNumber{font-size:13px;line-height:1.1;color:#25333d;overflow-wrap:anywhere;max-width:100%}
+#calendar .crabPairShort{display:none}
+#calendar .crabPair .entryCommentBadge{position:static!important;float:none!important;display:flex!important;width:max-content!important;max-width:100%;min-width:0!important;height:16px!important;min-height:16px!important;padding:0 1px!important;margin:0!important;gap:0!important;font-size:9px!important;line-height:1!important}
+#calendar .crabPair .entryCommentBadge svg{width:9px!important;height:9px!important}
+#calendar .crabPair:focus-visible{outline:2px solid #3478b8;outline-offset:1px}
+@media(max-width:600px){
+ #calendar .crabPair{width:100%;padding:1px;margin-top:2px}
+ #calendar .crabPairName{font-size:10px;line-height:1.15;margin-bottom:1px}
+ #calendar .crabPairColumns{gap:1px}
+ #calendar .crabPairCell{padding:0;border-radius:2px;gap:0}
+ #calendar .crabPairLabel{font-size:9px}
+ #calendar .crabPairNumber{font-size:10px}
+ #calendar .crabPairLong{display:none}#calendar .crabPairShort{display:inline}
+ #calendar .crabPair .entryCommentBadge{height:14px!important;min-height:14px!important;font-size:8px!important}
+ #calendar .crabPair .entryCommentBadge svg{width:8px!important;height:8px!important}
+}
+@media(max-width:600px){
+ #calendar .crabPairCell{aspect-ratio:auto;min-height:27px}
+ #calendar .crabPairNumber{font:800 10px/1.1 Arial,sans-serif;letter-spacing:-.4px}
+}
