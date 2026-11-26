@@ -49,3 +49,19 @@
  #calendar .crabCountGrid .entryCommentBadge:not(.zero){height:14px!important;min-height:14px!important;font-size:8px!important}
  #calendar .crabCountGrid .entryCommentBadge svg{width:8px!important;height:8px!important}
 }
+
+/* Compact paired records: keep order left, shipping right and enlarge numbers. */
+#calendar .crabCountGrid{align-items:start;row-gap:2px}
+#calendar .crabCountGrid .entry{aspect-ratio:auto;min-height:0;padding:2px 3px!important;line-height:1.15!important}
+#calendar .crabCountGrid .entry b{font-size:11px;line-height:1.15;margin:0 0 1px;white-space:nowrap}
+#calendar .crabCountGrid .crabRecordDetails{font-size:10px;line-height:1.15}
+#calendar .crabCountGrid .crabRecordCount{font-size:14px;font-weight:800;line-height:1.1;white-space:nowrap}
+@media(max-width:600px){
+ .board{overflow-x:auto}
+ .board .calHead,.board #calendar{min-width:560px}
+ #calendar .crabCountGrid .entry{padding:2px!important}
+ #calendar .crabCountGrid .entry b{font-size:11px}
+ #calendar .crabCountGrid .crabRecordDetails{font-size:10px}
+ #calendar .crabCountGrid .crabRecordCount{font:800 13px/1.1 Arial,sans-serif;letter-spacing:0}
+}
+@media(max-width:600px){.board::before{content:'カレンダーは左右に動かせます';display:block;color:#6d655f;font-size:11px;margin:0 0 5px}}

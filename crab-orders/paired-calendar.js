@@ -16,5 +16,7 @@ function layout(){
   day.append(grid)
  })
 }
-const previous=render;render=function(){previous();layout()};render();
+const previous=render;render=function(){previous();layout()};
+// Pickers must call the current renderer, not an earlier captured version.
+yearPick.onchange=()=>render();monthPick.onchange=()=>render();render();
 })();
