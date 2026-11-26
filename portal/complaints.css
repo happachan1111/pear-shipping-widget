@@ -18,3 +18,5 @@
 .complaintTabs.pear{padding:12px 18px;gap:12px}.complaintTabs.pear button{min-height:52px;padding:1px 6px}
 .complaintTabs.crab{padding:12px 18px;gap:8px}.complaintTabs.crab button{min-height:44px;padding:7px 5px}
 @media(max-width:720px){.complaintTabs.pear{padding:12px 18px;gap:12px}.complaintTabs.crab{padding:8px 10px;gap:6px}.complaintTabs button{font-size:17px}}
+
+@media(min-width:721px){.complaintTabs.pear{grid-template-columns:repeat(5,minmax(0,1fr))}}
