@@ -5,5 +5,24 @@
 .portalSearch>button{min-height:38px;padding:6px 10px;border:1px solid #a3b7ca;border-radius:7px;background:#fff;color:#1f5f94;white-space:nowrap}
 .portalSearchDialog{width:min(680px,calc(100vw - 24px));max-height:min(700px,calc(100dvh - 24px));border:1px solid #ccd6df;border-radius:14px;padding:18px;color:#202d39;background:#fff;box-shadow:0 10px 40px #0003;overflow:auto}
 .portalSearchDialog::backdrop{background:#0007}.portalSearchDialog .searchHead{display:flex;align-items:center;justify-content:space-between;gap:12px}.searchHead h2{font-size:18px;margin:0;overflow-wrap:anywhere}.searchHead button{border:0;background:#f2f5f7;border-radius:8px;width:40px;height:40px;font-size:24px;color:#314455}.searchScope{font-size:13px;color:#596b79}.searchResult{display:flex;width:100%;flex-direction:column;align-items:flex-start;text-align:left;gap:3px;border:1px solid #dbe2e8;border-radius:9px;background:#fff;color:#202d39;padding:10px 12px;margin:8px 0}.searchResult:hover{background:#eff7fc}.searchResult small{color:#286899}.searchResult span{font-size:13px;white-space:pre-line;overflow-wrap:anywhere;color:#475969}
-@media(max-width:1450px){body{--header:142px}body.holdReminderVisible{--header:187px}.topbar{display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:'menu title original' 'clock clock clock' 'search search search';grid-template-rows:48px 35px 40px;gap:0 10px;padding:4px 12px;align-content:center}body.holdReminderVisible .topbar{grid-template-areas:'menu title original' 'clock clock clock' 'search search search' 'reminder reminder reminder';grid-template-rows:48px 35px 40px 45px}.topbar .menuButton{grid-area:menu}.topbar .appTitle{grid-area:title;min-width:0}.topbar .original{grid-area:original;justify-self:end}.topbar .homeClock{grid-area:clock;justify-self:start;margin:0}.topbar .portalSearch{grid-area:search;justify-self:stretch;width:100%;max-width:400px}.topbar .holdReminder{grid-area:reminder;width:100%;min-width:0;justify-self:stretch}}
-@media(max-width:360px){body{--header:154px}body.holdReminderVisible{--header:199px}.topbar{grid-template-rows:60px 35px 40px}body.holdReminderVisible .topbar{grid-template-rows:60px 35px 40px 45px}}
+/* Wide screens: put search between the title and clock; reserve room for the alert. */
+@media(min-width:1451px){
+ body{--header:72px}
+ .topbar{display:grid;grid-template-columns:auto auto minmax(180px,1fr) auto auto auto;grid-template-areas:'menu title search clock reminder original';gap:12px}
+ .topbar .menuButton{grid-area:menu}.topbar .appTitle{grid-area:title;min-width:0}.topbar .portalSearch{grid-area:search;justify-self:center;width:100%;max-width:340px}.topbar .homeClock{grid-area:clock;margin:0}.topbar .holdReminder{grid-area:reminder;width:380px}.topbar .original{grid-area:original}
+}
+/* Keep the daily reminder legible without hiding or covering the search. */
+.topbar .holdReminder{gap:10px;padding:7px 10px}
+.topbar .holdReminder strong{font-size:15px;line-height:1.3;white-space:normal}
+.topbar .holdReminder p{font-size:12px;line-height:1.35;white-space:normal}
+.topbar .holdReminder button{min-height:44px;padding:8px 14px;font-size:14px}
+@media(max-width:1450px){body{--header:142px}body.holdReminderVisible{--header:222px}.topbar{display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:'menu title original' 'clock clock clock' 'search search search';grid-template-rows:48px 35px 40px;gap:0 10px;padding:4px 12px;align-content:center}body.holdReminderVisible .topbar{grid-template-areas:'menu title original' 'clock clock clock' 'search search search' 'reminder reminder reminder';grid-template-rows:48px 35px 40px 80px}.topbar .menuButton{grid-area:menu}.topbar .appTitle{grid-area:title;min-width:0}.topbar .original{grid-area:original;justify-self:end}.topbar .homeClock{grid-area:clock;justify-self:start;margin:0}.topbar .portalSearch{grid-area:search;justify-self:center;width:100%;max-width:400px}.topbar .holdReminder{grid-area:reminder;width:100%;min-width:0;justify-self:stretch}}
+@media(max-width:360px){body{--header:154px}body.holdReminderVisible{--header:254px}.topbar{grid-template-rows:60px 35px 40px}body.holdReminderVisible .topbar{grid-template-rows:60px 35px 40px 100px}}
+/* On laptop screens, keep the search centered between the clock and reminder. */
+@media(min-width:1050px) and (max-width:1450px){
+ body,body.holdReminderVisible{--header:134px}
+ .topbar,body.holdReminderVisible .topbar{grid-template-columns:auto auto minmax(220px,1fr) auto auto;grid-template-areas:'menu title title title original' 'clock clock search reminder reminder';grid-template-rows:48px 70px}
+ .topbar .menuButton,.topbar .appTitle{justify-self:start}
+ .topbar .portalSearch{justify-self:center}
+ .topbar .holdReminder{width:380px;max-width:100%;justify-self:end}
+}
