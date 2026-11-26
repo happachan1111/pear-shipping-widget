@@ -20,3 +20,6 @@
 @media(max-width:720px){.complaintTabs.pear{padding:12px 18px;gap:12px}.complaintTabs.crab{padding:8px 10px;gap:6px}.complaintTabs button{font-size:17px}}
 
 @media(min-width:721px){.complaintTabs.pear{grid-template-columns:repeat(5,minmax(0,1fr))}}
+
+/* Keep event navigation available while the complaint page scrolls. */
+.complaintTabs{position:sticky;top:0;z-index:20}
