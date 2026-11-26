@@ -3,7 +3,7 @@
  const API='https://flat-disk-51b0.sasaki-8ef.workers.dev';
  const $=id=>document.getElementById(id),dialog=$('portalSearchDialog');
  const events={operations_schedule:'通常',mothers_day_schedule:'母の日',fathers_day_schedule:'父の日',respect_for_aged_day_schedule:'敬老の日',valentine_white_day_schedule:'バレンタイン',white_day_schedule:'ホワイトデー',pear_operations_schedule:'梨・柿',crab_operations_schedule:'カニ'};
- const normal=s=>String(s??'').normalize('NFKC').toLocaleLowerCase();
+ const normal=s=>String(s??'').normalize('NFKC').toLocaleLowerCase().replace(/(\d),(?=\d{3}(?:\D|$))/g,'$1');
  const memo=r=>{try{return JSON.parse(r.memo||'{}')}catch{return {}}};
  const matches=(item,words)=>words.every(w=>normal([item.title,item.description,item.date,item.scope].join(' ')).includes(w));
  const readableComments=r=>(Array.isArray(r.comments)?r.comments:[]).map(c=>typeof c==='string'?c:(c?.text||c?.message||c?.content||'')).join(' ');
