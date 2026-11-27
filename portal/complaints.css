@@ -23,3 +23,6 @@
 
 /* Keep event navigation available while the complaint page scrolls. */
 .complaintTabs{position:sticky;top:0;z-index:20}
+
+@media(min-width:721px){.complaintTabs.crab{grid-template-columns:repeat(5,minmax(0,1fr))}}
+.topics{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px}.topics .topicItem{display:block;background:#f8fbfd;border:1px solid #d7e5ef;border-radius:9px;padding:0}.topicItem summary{padding:12px;font-weight:700;cursor:pointer;color:#244e6c}.topicItem p{margin:8px 12px}.topicItem .topicDetails{white-space:pre-wrap;line-height:1.7;color:#273b4c}.topicItem button{margin:4px 12px 12px;min-height:40px}.topicSource{font-size:12px;color:#667c8d}

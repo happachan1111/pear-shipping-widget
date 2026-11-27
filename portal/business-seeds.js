@@ -352,4 +352,37 @@ window.portalBusinessSeeds=[
     "kind": "event",
     "seed": true
   }
+,
+{
+  "id": "portal-business-v1:guide-mother-hibiya-parcels",
+  "partner": "日比谷花壇",
+  "title": "母の日｜商品別・1個口の数量",
+  "details": "過去のNotion記載です。現在の商品・梱包条件を確認してください。\n\nあじさい（万華・月うさぎ）、桜盆栽（旭山・御殿場・冨士枝垂れ桜）、一才藤は、それぞれ1個口あたり1個の記載です。その他の商品は未確認です。",
+  "kind": "event",
+  "seed": true
+},
+{
+  "id": "portal-business-v1:guide-father-parcels",
+  "partner": "ダイマツ・別所・前田",
+  "title": "父の日｜商品別・1個口の数量",
+  "details": "過去のNotion記載です。現在の商品・梱包条件を確認してください。\n\nダイマツの西京漬け・煮魚・焼き魚の掲載商品は「3個以下、または1種類」。別所は5種・まるが2、7種・9種が1（要望時の例外あり）。前田の甲羅御膳・紅せこの甲羅盛り合わせは5。その他の商品の数量は未確認です。",
+  "kind": "event",
+  "seed": true
+},
+{
+  "id": "portal-business-v1:guide-valentine-parcels",
+  "partner": "福田屋",
+  "title": "バレホワ｜上生しょこらの個口数",
+  "details": "過去のNotion記載です。現在の商品・梱包条件を確認してください。\n\n上生しょこら：3撰は1個口150、4撰は1個口60。その他の数値には不明・要確認のものがあります。",
+  "kind": "event",
+  "seed": true
+},
+{
+  "id": "portal-business-v1:inquiry-c-yearend",
+  "partner": "共通",
+  "title": "カニ｜問い合わせ：年末年始に食べたい",
+  "details": "Notionの参考情報には未検証の保存方法が含まれていました。保管期間・冷凍や再加熱の可否を一律に案内せず、商品の表示と出荷元に確認してください。\n\n【返信文（下書き・送信前に確認）】\nお問い合わせいただきありがとうございます。お届けした商品の状態と保存条件を確認のうえ、出荷元に確認してご案内いたします。まずは商品の表示に記載された保存方法をご確認ください。",
+  "kind": "event",
+  "seed": true
+}
 ];
