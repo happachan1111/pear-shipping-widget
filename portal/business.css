@@ -4,3 +4,6 @@
 
 /* Readable, expandable shared information list. */
 .list{display:grid;grid-template-columns:1fr;gap:8px}.card{padding:0;overflow:hidden}.card summary{list-style:none;display:flex;align-items:center;gap:12px;cursor:pointer;padding:14px 16px}.card summary::-webkit-details-marker{display:none}.card summary:hover{background:#f4f9fc}.cardHeading{flex:1;min-width:0}.cardHeading strong{display:block;font-size:16px;overflow-wrap:anywhere}.cardHeading>span{display:block;color:#5b6c7c;font-size:14px;margin-top:2px;overflow-wrap:anywhere}.cardArrow{font-size:20px;line-height:1;color:#5680a0}.card[open] .cardArrow{transform:rotate(90deg)}.cardContent{border-top:1px solid #e5edf2;padding:2px 16px 15px}.card .body{font-size:15px;line-height:1.7}.card summary:focus-visible{outline:3px solid #88b8ec;outline-offset:-3px}@media(max-width:650px){.card summary{padding:13px 12px}.cardHeading strong{font-size:15px}.cardHeading>span{font-size:13px}.cardContent{padding:2px 12px 14px}.card .body{font-size:14px}}
+
+/* デスクトップは一覧と編集画面を広めに表示する。 */
+@media (min-width: 900px){main{max-width:1680px;width:100%}dialog{width:min(960px,calc(100% - 48px))}}
